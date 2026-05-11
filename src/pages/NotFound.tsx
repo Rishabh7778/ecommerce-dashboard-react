@@ -22,7 +22,7 @@ const NotFound = () => {
   return (
     <div className="min-h-screen bg-[#F8F9FA] flex items-center justify-center px-4 font-sans">
       <div className="max-w-md w-full text-center">
-        
+
         {/* Animated Icon */}
         <div className="mb-8 flex justify-center">
           <div className="relative">
@@ -43,11 +43,11 @@ const NotFound = () => {
         {/* Action Buttons */}
         <div className="flex flex-col gap-4">
           <button
-             onClick={() => navigate(-1)}
+            onClick={() => navigate(getRedirectPath())}
             className="flex items-center justify-center gap-2 py-4 px-8 bg-[#3BB77E] hover:bg-[#2fa06c] text-white font-bold rounded-2xl shadow-lg shadow-green-100 transition-all transform hover:-translate-y-1"
           >
             <Home size={20} />
-            Go Back
+            Go Home
           </button>
 
           {/* <button
