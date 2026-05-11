@@ -18,7 +18,7 @@ export interface AuthResponse {
 export const authApi = createApi({
     reducerPath: 'authApi',
     baseQuery: fetchBaseQuery({ 
-        baseUrl: 'http://localhost:5000/api',
+        baseUrl: import.meta.env.VITE_API_BASE_URL + '/api',
         // 🔥 Ye line har request ke saath cookies bhejegi
         prepareHeaders: (headers) => {
             // Ab localStorage se token nikalne ki zaroorat nahi hai!

@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 export const complaintApi = createApi({
     reducerPath: 'complaintApi',
     baseQuery: fetchBaseQuery({ 
-        baseUrl: 'http://localhost:5000/api/complaints',
+        baseUrl: import.meta.env.VITE_API_BASE_URL + '/api/complaints',
         credentials: 'include',
     }),
     tagTypes: ['Complaint'],

@@ -37,7 +37,7 @@ export interface Product {
 export const productApi = createApi({
   reducerPath: 'productApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:5000/api',
+    baseUrl: import.meta.env.VITE_API_BASE_URL + '/api',
     credentials: 'include', // Cookie headers ke liye zaroori hai
   }),
   tagTypes: ['Product', 'Order', 'Category'],

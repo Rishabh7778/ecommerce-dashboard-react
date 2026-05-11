@@ -11,7 +11,7 @@ export interface Category {
 export const categoryApi = createApi({
     reducerPath: 'categoryApi',
     baseQuery: fetchBaseQuery({
-        baseUrl: 'http://localhost:5000/api/categories', // ✅ Sahi Base URL
+        baseUrl: import.meta.env.VITE_API_BASE_URL + '/api/categories', // ✅ Sahi Base URL
         credentials: 'include',
     }),
     tagTypes: ['Category'],

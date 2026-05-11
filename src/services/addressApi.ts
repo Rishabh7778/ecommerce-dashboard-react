@@ -15,7 +15,7 @@ export interface Address {
 export const addressApi = createApi({
     reducerPath: 'addressApi',
     baseQuery: fetchBaseQuery({ 
-        baseUrl: 'http://localhost:5000/api',
+        baseUrl: import.meta.env.VITE_API_BASE_URL + '/api',
         // 🔥 fetchFn likhne ki jagah seedha ye likho, ye standard hai:
         prepareHeaders: (headers) => {
             return headers;

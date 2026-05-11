@@ -30,7 +30,7 @@ export interface OrderResponse {
 export const orderApi = createApi({
     reducerPath: 'orderApi',
     baseQuery: fetchBaseQuery({ 
-        baseUrl: 'http://localhost:5000/api',
+        baseUrl: import.meta.env.VITE_API_BASE_URL + '/api',
         prepareHeaders: (headers) => {
             return headers;
         },

@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 export const userApi = createApi({
   reducerPath: 'userApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:5000/api/users', // 🔥 Aapka naya user route
+    baseUrl: import.meta.env.VITE_API_BASE_URL + '/api/users', // 🔥 Aapka naya user route
     credentials: 'include',
   }),
   tagTypes: ['User'],
