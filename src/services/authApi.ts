@@ -17,16 +17,9 @@ export interface AuthResponse {
 
 export const authApi = createApi({
     reducerPath: 'authApi',
-    baseQuery: fetchBaseQuery({ 
+    baseQuery: fetchBaseQuery({
         baseUrl: import.meta.env.VITE_API_BASE_URL + '/api',
-        // 🔥 Ye line har request ke saath cookies bhejegi
-        prepareHeaders: (headers) => {
-            // Ab localStorage se token nikalne ki zaroorat nahi hai!
-            return headers;
-        },
-        fetchFn: (url, options) => {
-            return fetch(url, { ...options, credentials: 'include' }); // 👈 Secret Sauce
-        }
+        credentials: 'include',
     }),
 
     endpoints: (builder) => ({

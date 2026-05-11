@@ -34,7 +34,7 @@ export const orderApi = createApi({
         prepareHeaders: (headers) => {
             return headers;
         },
-        credentials: 'include', // 🔥 Ye zaroori hai taaki 'Token gayab hai' wala error na aaye
+        credentials: 'include', 
     }),
     tagTypes: ['Order'], // Auto-refresh ke liye
 

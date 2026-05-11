@@ -13,7 +13,7 @@ export interface Category {
 export const discountApi = createApi({
     reducerPath: 'discountApi',
     baseQuery: fetchBaseQuery({
-        baseUrl: 'http://localhost:5000/api/discounts',
+        baseUrl: import.meta.env.VITE_API_BASE_URL + '/api/discounts',
         credentials: 'include',
     }),
     tagTypes: ['Category', 'Product'], // Product bhi add kiya taaki price update ho
