@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import { ShoppingCart, Star, Loader2 } from 'lucide-react';
 import bean from '../assets/images/Bean.png'; // Fallback image
 

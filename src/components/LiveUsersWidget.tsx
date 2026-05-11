@@ -1,6 +1,5 @@
-import React from 'react';
 import { BarChart, Bar, ResponsiveContainer, Cell, Tooltip } from 'recharts';
-import { MapPin, MoreVertical } from 'lucide-react';
+import {  MoreVertical } from 'lucide-react';
 
 // 🔥 DUMMY DATA (Backend API banne tak):
 // Baad mein ye data aapke backend se aayega ki kis state se kitne log aaye.

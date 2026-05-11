@@ -1,4 +1,3 @@
-import React from 'react';
 import StatCard from '../components/StatCard';
 import MainChart from '../components/MainChart';
 import LiveUsersWidget from '../components/LiveUsersWidget';

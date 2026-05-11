@@ -1,4 +1,3 @@
-import React from 'react';
 import { useGetMyOrdersQuery } from '../services/orderApi';
 import { Loader2, ShoppingBag, Truck, CheckCircle, Clock, Package, XCircle } from 'lucide-react';
 

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { Tag, Loader2, CheckCircle2, ChevronDown, Percent, IndianRupee, Trash2, List } from 'lucide-react';
 import { useGetAllProductsQuery, useUpdateProductMutation } from '../services/productApi';
 

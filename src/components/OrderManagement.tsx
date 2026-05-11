@@ -1,4 +1,3 @@
-import React from 'react';
 import { useGetAllOrdersAdminQuery, useUpdateOrderStatusMutation } from '../services/orderApi';
 import { Loader2, Package } from 'lucide-react';
 import Swal from 'sweetalert2';

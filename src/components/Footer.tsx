@@ -1,4 +1,3 @@
-import React from 'react';
 // Lucide se brand icons HATA dein, sirf normal UI icons rakhein:
 import { MapPin, Headphones, Mail, Clock, PhoneCall } from 'lucide-react';
 

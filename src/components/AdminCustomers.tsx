@@ -1,4 +1,3 @@
-import React from 'react';
 import { useGetAllComplaintsQuery, useResolveComplaintMutation } from '../services/complaintApi';
 import { Loader2, Users, Mail, Phone, CheckCircle } from 'lucide-react';
 import Swal from 'sweetalert2';

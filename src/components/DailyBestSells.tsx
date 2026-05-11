@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import  { useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, ShoppingCart, Star, ArrowRight as ArrowRightIcon, Loader2 } from 'lucide-react';
 import leaf from "../assets/images/Leaf.png";
 import dandy from "../assets/images/Dandy.png"; // Fallback image
@@ -12,7 +12,7 @@ const DailyBestSells = () => {
   const sliderRef = useRef<HTMLDivElement>(null);
 
   // 🔥 API Call: Fetch all products
-  const { data: productsData, isLoading, isError } = useGetAllProductsQuery({ limit: 'all' });
+  const { data: productsData, isLoading } = useGetAllProductsQuery({ limit: 'all' });
   
   // Safely extract products array
   const allProducts = Array.isArray(productsData) ? productsData : productsData?.products || [];

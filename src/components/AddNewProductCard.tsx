@@ -1,4 +1,3 @@
-import React from 'react';
 import { PlusCircle, ChevronRight, Smartphone, Shirt, Home as HomeIcon } from 'lucide-react';
 
 const AddNewProductCard = () => {

@@ -1,6 +1,5 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FileQuestion, Home, ArrowLeft } from 'lucide-react';
+import { FileQuestion, Home } from 'lucide-react';
 
 const NotFound = () => {
   const navigate = useNavigate();

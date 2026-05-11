@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Search, RefreshCw, Heart, ShoppingCart, User, 
+import  { useState, useEffect } from 'react';
+import {  ShoppingCart, User, 
   Grid, ChevronDown, Flame, Headphones 
 } from 'lucide-react';
 import { NavLink } from 'react-router-dom';

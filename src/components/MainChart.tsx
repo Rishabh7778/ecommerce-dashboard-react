@@ -1,4 +1,3 @@
-import React from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { MoreVertical, Loader2 } from 'lucide-react';
 import { useGetDashboardStatsQuery } from '../services/productApi';

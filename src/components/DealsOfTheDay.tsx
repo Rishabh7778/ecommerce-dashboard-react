@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { ShoppingCart } from 'lucide-react';
 import deal from '../assets/images/Deal.png';
 

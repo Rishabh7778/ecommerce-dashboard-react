@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import { Search, Loader2, Package } from 'lucide-react';
 import { useGetDashboardStatsQuery } from '../services/productApi';
 

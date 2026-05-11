@@ -1,4 +1,3 @@
-import React from 'react';
 import { useGetAllOrdersAdminQuery } from '../services/orderApi';
 import { Loader2, CreditCard, User, CalendarDays, Receipt } from 'lucide-react';
 

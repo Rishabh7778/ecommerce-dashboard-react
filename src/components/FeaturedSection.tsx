@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import  { useRef } from 'react';
 import { ArrowLeft, ArrowRight, Loader2 } from 'lucide-react';
 import burger from '../assets/images/Burger.png';
 import kiwi from '../assets/images/kiwi.png';
