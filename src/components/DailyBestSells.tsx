@@ -8,7 +8,7 @@ import { useGetAllProductsQuery } from '../services/productApi';
 
 
 const DailyBestSells = () => {
-  const [activeTab, setActiveTab] = useState("All");
+  const [activeTab] = useState("All");
   const sliderRef = useRef<HTMLDivElement>(null);
 
   // 🔥 API Call: Fetch all products

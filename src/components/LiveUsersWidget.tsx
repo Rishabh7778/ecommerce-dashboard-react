@@ -1,5 +1,5 @@
 import { BarChart, Bar, ResponsiveContainer, Cell, Tooltip } from 'recharts';
-import {  MoreVertical } from 'lucide-react';
+import { MoreVertical } from 'lucide-react';
 
 // 🔥 DUMMY DATA (Backend API banne tak):
 // Baad mein ye data aapke backend se aayega ki kis state se kitne log aaye.
@@ -36,21 +36,20 @@ const LiveUsersWidget = () => {
       </div>
 
       <p className="text-xs text-gray-400 mb-2">Users per minute</p>
-      
+
       {/* Mini Bar Chart */}
       <div className="h-16 w-full mb-6">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={liveChartData}>
-            <Tooltip 
+            <Tooltip
               cursor={{ fill: '#f3f4f6' }}
               contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)', fontSize: '12px' }}
             />
             <Bar dataKey="users" radius={[2, 2, 0, 0]}>
-              {liveChartData.map((entry, index) => (
-                <Cell 
-                  key={`cell-${index}`} 
-                  // Last wale bar (Now) ko dark green aur baaki ko light green karega
-                  fill={index === liveChartData.length - 1 ? '#3BB77E' : '#A7F3D0'} 
+              {liveChartData.map((_, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={index === liveChartData.length - 1 ? '#3BB77E' : '#A7F3D0'}
                 />
               ))}
             </Bar>
@@ -76,10 +75,10 @@ const LiveUsersWidget = () => {
                 <p className="text-[10px] text-gray-400 font-medium truncate w-20">{item.state}</p>
               </div>
             </div>
-            
+
             {/* Progress Bar */}
             <div className="flex-1 mx-4 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-               <div className={`h-full bg-[#3BB77E] rounded-full ${item.width}`}></div>
+              <div className={`h-full bg-[#3BB77E] rounded-full ${item.width}`}></div>
             </div>
 
             {/* Trend Indicator */}
