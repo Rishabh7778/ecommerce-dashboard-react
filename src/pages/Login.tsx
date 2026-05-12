@@ -44,6 +44,7 @@ const Login = () => {
 
                 // Token aur User Info save karein
                 localStorage.setItem('user', JSON.stringify(res.user));
+                localStorage.setItem('token', res.token);
 
                 Swal.fire({
                     icon: 'success',

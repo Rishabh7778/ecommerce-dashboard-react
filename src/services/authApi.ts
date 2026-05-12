@@ -19,7 +19,17 @@ export const authApi = createApi({
     reducerPath: 'authApi',
     baseQuery: fetchBaseQuery({
         baseUrl: import.meta.env.VITE_API_BASE_URL + '/api',
-        credentials: 'include',
+       
+        prepareHeaders: (headers) => {
+            
+            const token = localStorage.getItem('token');
+
+           
+            if (token) {
+                headers.set('authorization', `Bearer ${token}`);
+            }
+            return headers;
+        },
     }),
 
     endpoints: (builder) => ({
