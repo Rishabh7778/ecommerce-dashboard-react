@@ -14,7 +14,13 @@ export const discountApi = createApi({
     reducerPath: 'discountApi',
     baseQuery: fetchBaseQuery({
         baseUrl: import.meta.env.VITE_API_BASE_URL + '/api/discounts',
-        credentials: 'include',
+        prepareHeaders: (headers) => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                headers.set('authorization', `Bearer ${token}`);
+            }
+            return headers;
+        },
     }),
     tagTypes: ['Category', 'Product'], // Product bhi add kiya taaki price update ho
 

@@ -4,7 +4,14 @@ export const complaintApi = createApi({
     reducerPath: 'complaintApi',
     baseQuery: fetchBaseQuery({ 
         baseUrl: import.meta.env.VITE_API_BASE_URL + '/api/complaints',
-        credentials: 'include',
+        // credentials: 'include', // Isko hata sakte ho ab
+        prepareHeaders: (headers) => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                headers.set('authorization', `Bearer ${token}`);
+            }
+            return headers;
+        },
     }),
     tagTypes: ['Complaint'],
 

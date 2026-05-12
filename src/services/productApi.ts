@@ -36,10 +36,16 @@ export interface Product {
 
 export const productApi = createApi({
   reducerPath: 'productApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_API_BASE_URL + '/api',
-    credentials: 'include', // Cookie headers ke liye zaroori hai
-  }),
+  baseQuery: fetchBaseQuery({ 
+        baseUrl: import.meta.env.VITE_API_BASE_URL + '/api',
+        prepareHeaders: (headers) => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                headers.set('authorization', `Bearer ${token}`);
+            }
+            return headers;
+        },
+    }),
   tagTypes: ['Product', 'Order', 'Category'],
 
   endpoints: (builder) => ({

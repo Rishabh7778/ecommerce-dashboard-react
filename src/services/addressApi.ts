@@ -17,9 +17,12 @@ export const addressApi = createApi({
     baseQuery: fetchBaseQuery({ 
         baseUrl: import.meta.env.VITE_API_BASE_URL + '/api',
         prepareHeaders: (headers) => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                headers.set('authorization', `Bearer ${token}`);
+            }
             return headers;
         },
-        credentials: 'include',
     }),
     tagTypes: ['Address'], // Isse auto-refresh hoga naya address add hone par
 
