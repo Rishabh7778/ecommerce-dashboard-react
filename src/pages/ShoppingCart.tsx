@@ -17,7 +17,7 @@ const ShoppingCart: React.FC = () => {
   const [createOrder, { isLoading: isCreatingOrder }] = useCreateOrderMutation();
   const [verifyPayment] = useVerifyPaymentMutation();
   const { data: addressData, isLoading: isLoadingAddress } = useGetMyAddressesQuery();
-  const [selectedAddressId, setSelectedAddressId] = useState<number | null>(null);
+  const [selectedAddressId, setSelectedAddressId] = useState<string | number | null>(null);
 
   const deliveryFee = 60;
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -46,15 +46,18 @@ const ShoppingCart: React.FC = () => {
     }
 
     try {
-      const order = await createOrder({ amount: total, address_id: selectedAddressId }).unwrap();
-      
+      const order = await createOrder({ 
+  amount: total, 
+  address_id: Number(selectedAddressId) 
+}).unwrap();
+
       const options = {
-        key: "rzp_test_SaHsGrX7ll56Xr", 
-        amount: order.amount, 
+        key: "rzp_test_SaHsGrX7ll56Xr",
+        amount: order.amount,
         currency: order.currency,
         name: "Bitezone", // 🔥 Isey update kar diya
         description: "Transaction",
-        order_id: order.id, 
+        order_id: order.id,
         handler: async (response: any) => {
           try {
             const verifyData = {
@@ -63,12 +66,12 @@ const ShoppingCart: React.FC = () => {
               razorpay_signature: response.razorpay_signature,
               cartItems: items
             };
-            
+
             await verifyPayment(verifyData).unwrap();
-            
+
             // 🔥 YAHAN HUA ASLI MAGIC: Cart Khali aur Success Message
-            dispatch(clearCart()); 
-            
+            dispatch(clearCart());
+
             Swal.fire({
               title: "Awesome!",
               text: "Payment Successful & Order Placed!",
@@ -76,7 +79,7 @@ const ShoppingCart: React.FC = () => {
               confirmButtonColor: "#00b212"
             }).then(() => {
               // OK par click karte hi User ko Orders page ya Home page par bhej do
-              navigate('/account'); 
+              navigate('/account');
             });
 
           } catch (vErr) {
@@ -91,9 +94,9 @@ const ShoppingCart: React.FC = () => {
       };
 
       const rzp = new (window as any).Razorpay(options);
-      
+
       rzp.on('payment.failed', function (response: any) {
-          alert("Payment Fail ho gayi: " + response.error.description);
+        alert("Payment Fail ho gayi: " + response.error.description);
       });
 
       rzp.open();
@@ -170,10 +173,10 @@ const ShoppingCart: React.FC = () => {
                 {isLoadingAddress ? (
                   <p className="text-xs text-gray-500">Loading addresses...</p>
                 ) : addressData?.addresses?.length ? (
-                  <select 
+                  <select
                     className="w-full p-3 border border-gray-200 rounded-xl bg-gray-50 text-sm outline-none focus:border-[#00b212]"
-                    value={selectedAddressId || ''}
-                    onChange={(e) => setSelectedAddressId(Number(e.target.value))}
+                    value={selectedAddressId ?? ''}
+                    onChange={(e) => setSelectedAddressId(e.target.value)}
                   >
                     <option value="" disabled>Select an address...</option>
                     {addressData.addresses.map(addr => (
@@ -187,14 +190,13 @@ const ShoppingCart: React.FC = () => {
                 )}
               </div>
 
-              <button 
+              <button
                 onClick={handleCheckout}
                 disabled={items.length === 0 || isCreatingOrder}
-                className={`w-full mt-8 font-semibold py-3 px-4 rounded-xl transition-colors duration-200 flex justify-center items-center gap-2 ${
-                  items.length === 0 || isCreatingOrder
-                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-                  : 'bg-[#00b212] hover:bg-[#009910] text-white'
-                }`}
+                className={`w-full mt-8 font-semibold py-3 px-4 rounded-xl transition-colors duration-200 flex justify-center items-center gap-2 ${items.length === 0 || isCreatingOrder
+                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    : 'bg-[#00b212] hover:bg-[#009910] text-white'
+                  }`}
               >
                 {isCreatingOrder && <Loader2 className="animate-spin" size={18} />}
                 {isCreatingOrder ? "Processing..." : "Check Out"}
