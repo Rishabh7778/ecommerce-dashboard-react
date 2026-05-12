@@ -105,7 +105,7 @@ export const productApi = createApi({
     }),
 
     // --- PAYMENT ENDPOINTS ---
-    createOrder: builder.mutation<any, { amount: number; address_id: number }>({
+    createOrder: builder.mutation<any, { amount: number; address_id: string | number }>({
       query: (data) => ({
         url: '/payments/create-order',
         method: 'POST',

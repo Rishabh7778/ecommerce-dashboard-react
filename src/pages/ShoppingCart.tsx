@@ -46,16 +46,16 @@ const ShoppingCart: React.FC = () => {
     }
 
     try {
-      const order = await createOrder({ 
-  amount: total, 
-  address_id: Number(selectedAddressId) 
-}).unwrap();
+      const order = await createOrder({
+        amount: total,
+        address_id: selectedAddressId
+      }).unwrap();
 
       const options = {
         key: "rzp_test_SaHsGrX7ll56Xr",
         amount: order.amount,
         currency: order.currency,
-        name: "Bitezone", // 🔥 Isey update kar diya
+        name: "Bitezone",
         description: "Transaction",
         order_id: order.id,
         handler: async (response: any) => {
@@ -194,8 +194,8 @@ const ShoppingCart: React.FC = () => {
                 onClick={handleCheckout}
                 disabled={items.length === 0 || isCreatingOrder}
                 className={`w-full mt-8 font-semibold py-3 px-4 rounded-xl transition-colors duration-200 flex justify-center items-center gap-2 ${items.length === 0 || isCreatingOrder
-                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    : 'bg-[#00b212] hover:bg-[#009910] text-white'
+                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  : 'bg-[#00b212] hover:bg-[#009910] text-white'
                   }`}
               >
                 {isCreatingOrder && <Loader2 className="animate-spin" size={18} />}
