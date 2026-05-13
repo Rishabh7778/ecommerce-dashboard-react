@@ -8,6 +8,7 @@ import { complaintApi } from "../services/complaintApi";
 import { discountApi } from "../services/discountApi";
 import { categoryApi } from "../services/categoryApi";
 import { userApi } from "../services/userApi";
+import { offerApi } from "../services/offerApi";
 
 
 // 1. Local storage se data load karne ka function
@@ -44,13 +45,14 @@ const store = configureStore({
     [discountApi.reducerPath]: discountApi.reducer,
     [categoryApi.reducerPath]: categoryApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
+    [offerApi.reducerPath]: offerApi.reducer, 
 
   },
   preloadedState: {
     cart: loadState() // App start hone par yahan se data aayega
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(productApi.middleware, authApi.middleware, addressApi.middleware, orderApi.middleware, complaintApi.middleware, discountApi.middleware, categoryApi.middleware, userApi.middleware), 
+    getDefaultMiddleware().concat(productApi.middleware, authApi.middleware, addressApi.middleware, orderApi.middleware, complaintApi.middleware, discountApi.middleware, categoryApi.middleware, userApi.middleware, offerApi.middleware), 
 });
 
 // 3. Jab bhi store change hoga, hum usko localStorage me save kar denge

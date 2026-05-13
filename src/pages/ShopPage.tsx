@@ -1,8 +1,8 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { ShoppingCart, Star, Grid, List as ListIcon, Filter, ChevronDown, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../features/cartSlice';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 // APIs import karein
 import { useGetAllProductsQuery } from '../services/productApi';
@@ -17,10 +17,16 @@ const newProducts = [
   { name: 'Chen Sweater', price: 89.50, img: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?auto=format&fit=crop&w=100&q=80' },
 ];
 
+
 const ShopPage = () => {
-  const [isGridView, setIsGridView] = useState(true);
+const [isGridView, setIsGridView] = useState(true);
   const [showMobileSidebar, setShowMobileSidebar] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const [searchParams] = useSearchParams();
+  const categoryFromUrl = searchParams.get('category');
+  // State ko directly URL wale param se initialize karein
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(
+      categoryFromUrl ? Number(categoryFromUrl) : null
+  );
 
   // 🔥 FILTER & PAGINATION STATES
   const [currentPage, setCurrentPage] = useState(1);
@@ -29,6 +35,16 @@ const ShopPage = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+ 
+
+useEffect(() => {
+    if (categoryFromUrl) {
+      setSelectedCategory(Number(categoryFromUrl));
+      setCurrentPage(1);
+    } else {
+      setSelectedCategory(null);
+    }
+  }, [categoryFromUrl]);
 
   // API Calls (Limit aur Page pass kar rahe hain)
   const { data: responseData, isLoading: isProductsLoading, error } = useGetAllProductsQuery({ 

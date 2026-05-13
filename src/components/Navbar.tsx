@@ -1,18 +1,23 @@
-import  { useState, useEffect } from 'react';
-import {  ShoppingCart, User, 
-  Grid, ChevronDown, Flame, Headphones 
-} from 'lucide-react';
-import { NavLink } from 'react-router-dom';
-// 1. Redux hooks import karein
+import { useState, useEffect } from 'react';
+import { ShoppingCart, User, Grid, ChevronDown, Flame, Headphones } from 'lucide-react';
+import { NavLink, Link } from 'react-router-dom'; // 🔥 Link import kiya dropdown navigation ke liye
 import { useSelector } from 'react-redux';
 import type { RootState } from '../store/store';
+
+// 🔥 Apna sahi API path yahan daalein (jaise categoryApi ya discountApi)
+import { useGetCategoriesQuery } from '../services/discountApi'; 
 
 const Header = () => {
 
   const cartItems = useSelector((state: RootState) => state.cart.cartItems);
-
-  // Total quantity calculate karein
   const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
+
+  // 🔥 Fetch dynamic categories from Backend
+  const { data: categories, isLoading: isCategoriesLoading } = useGetCategoriesQuery();
+  // Agar API response mein data object ke andar hai toh aise set karein: data?.categories || []
+
+  // Dropdown state handle karne ke liye
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
 
   // 🔥 ANIMATED SLIDER LOGIC START
   const announcements = [
@@ -25,23 +30,20 @@ const Header = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(true);
 
-  // Har 3 second mein index badhayenge
   useEffect(() => {
     const timer = setInterval(() => {
-      setIsTransitioning(true); // Animation ON karein
+      setIsTransitioning(true);
       setCurrentIndex((prevIndex) => prevIndex + 1);
     }, 3000);
     return () => clearInterval(timer);
   }, []);
 
-  // Infinite Loop Hack: Agar last (clone) element par pahunch gaye, 
-  // toh chup-chap bina animation ke wapas 0 par aa jao.
   useEffect(() => {
     if (currentIndex === announcements.length) {
       const timeout = setTimeout(() => {
-        setIsTransitioning(false); // Animation OFF karein
-        setCurrentIndex(0); // Snap back to 0
-      }, 700); // 700ms (CSS transition time) tak wait karo
+        setIsTransitioning(false);
+        setCurrentIndex(0);
+      }, 700);
       return () => clearTimeout(timeout);
     }
   }, [currentIndex, announcements.length]);
@@ -50,14 +52,12 @@ const Header = () => {
   return (
     <header className="w-full bg-white font-sans">
       
-      {/* 1. Top Announcement Bar (🔥 Infinite Smooth Vertical Slider) */}
+      {/* 1. Top Announcement Bar */}
       <div className="hidden lg:flex justify-center items-center h-10 px-8 text-[13px] text-gray-500 border-b border-gray-100 bg-[#f8f9fa] overflow-hidden">
         <div 
-          // Agar transitioning true hai, toh smoothly jayega, warna jhatke se (snap) jayega
           className={`flex flex-col text-center ${isTransitioning ? 'transition-transform duration-700 ease-in-out' : ''}`}
-          style={{ transform: `translateY(-${currentIndex * 40}px)` }} // 40px height fix
+          style={{ transform: `translateY(-${currentIndex * 40}px)` }}
         >
-          {/* Original elements ke sath 1st element ki COPY last mein add kar di */}
           {[...announcements, announcements[0]].map((announcement, index) => (
             <div key={index} className="h-10 flex items-center justify-center whitespace-nowrap">
               {announcement}
@@ -72,7 +72,6 @@ const Header = () => {
         {/* Logo */}
         <div className="flex items-center gap-2 min-w-fit cursor-pointer">
           <div className="text-4xl text-green-500 font-black tracking-tight flex items-center">
-            {/* Using text placeholder for logo image */}
             <span className="text-yellow-400 mr-1 text-3xl">🥚</span>Nest
           </div>
           <div className="text-[10px] text-gray-500 font-semibold tracking-widest uppercase mt-3">
@@ -95,7 +94,6 @@ const Header = () => {
         {/* Right Actions */}
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-5">
-            {/* Cart - With Dynamic Redux Count */}
             <NavLink to="/cart" className="relative flex items-center gap-2 text-gray-700 hover:text-green-500 group">
               <div className="relative">
                 <ShoppingCart size={24} className="text-gray-600 group-hover:text-green-500 transition-colors" />
@@ -117,16 +115,55 @@ const Header = () => {
       {/* 3. Bottom Navbar */}
       <div className="hidden lg:flex justify-evenly items-center px-8 py-3 border-b border-gray-100">
         
-        {/* Navigation Links */}
         <div className="flex items-center gap-8">
-          <button className="bg-green-500 hover:bg-green-600 text-white px-5 py-2.5 rounded-md flex items-center gap-2 font-semibold text-sm transition-colors">
-            <Grid size={18} />
-            Browse All Categories
-            <ChevronDown size={16} className="ml-2" />
-          </button>
+          
+          {/* 🔥 Dynamic Category Dropdown Box */}
+          {/* 🔥 MEGA MENU CATEGORY DROPDOWN */}
+          <div 
+            className="relative group" // hover manage karne ke liye 'group' best hai
+            onMouseEnter={() => setIsCategoryOpen(true)}
+            onMouseLeave={() => setIsCategoryOpen(false)}
+          >
+            <button className="bg-[#3BB77E] hover:bg-[#2e9c68] text-white px-5 py-3 rounded-md flex items-center gap-2 font-bold text-sm transition-colors shadow-sm">
+              <Grid size={18} />
+              Browse All Categories
+              <ChevronDown size={16} className={`ml-2 transition-transform duration-300 ${isCategoryOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            {/* Dropdown Container */}
+            {isCategoryOpen && (
+              // pt-2 diya hai taaki button aur menu ke beech gap cover ho jaye aur mouse leave na ho
+              <div className="absolute top-full left-0 pt-2 w-[500px] z-50"> 
+                <div className="bg-white border border-gray-100 rounded-xl shadow-[0_15px_30px_rgba(0,0,0,0.08)] p-6">
+                  
+                  {isCategoriesLoading ? (
+                    <div className="text-center py-5 text-gray-400 font-medium animate-pulse">Loading Categories...</div>
+                  ) : categories && categories.length > 0 ? (
+                    // 🔥 2-Column Grid Format (Mega Menu Look)
+                    <div className="grid grid-cols-2 gap-x-6 gap-y-2">
+                      {categories.map((cat: any) => (
+                        <Link
+                          key={cat.id}
+                          to={`/shop?category=${cat.id}`} 
+                          onClick={() => setIsCategoryOpen(false)}
+                          className="block px-4 py-2.5 text-[14px] font-medium text-gray-600 rounded-md hover:bg-[#def9ec] hover:text-[#3BB77E] transition-all duration-200"
+                        >
+                          {cat.name}
+                        </Link>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-5 text-gray-400 font-medium">No Categories Found</div>
+                  )}
+
+                </div>
+              </div>
+            )}
+          </div>
+          {/* 🔥 MEGA MENU END */}
 
           <nav className="flex items-center gap-6 font-semibold text-sm text-gray-700">
-            <a href="#" className="flex items-center gap-1 text-green-500 hover:text-green-600">
+            <a href="#deals-of-the-day" className="flex items-center gap-1 text-green-500 hover:text-green-600">
               <Flame size={18} className="text-green-500" /> Hot Deals
             </a>
             <NavLink to="/" className="flex items-center gap-1 hover:text-green-500 transition-colors">Home </NavLink>

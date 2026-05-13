@@ -22,6 +22,7 @@ import AdminProducts from './components/AdminProducts';
 import AddDailyDealWidget from './components/AddDailyDealWidget';
 import AboutPage from './components/About';
 import ContactPage from './components/ContactPage';
+import AdminDeals from './components/AdminDeals';
 
 function App() {
   return (
@@ -59,6 +60,7 @@ function App() {
              <Route path="bulk-upload" element={<BulkUpload />} />
              <Route path="customers" element={<AdminCustomers />} />
              <Route path="products" element={<AdminProducts />} />
+             <Route path="deals" element={<AdminDeals />} />
              <Route path="discount" element={<AdminDiscount />} />
              <Route path="transactions" element={<Transactions />} />
              <Route path="daily-deals" element={<AddDailyDealWidget />} />

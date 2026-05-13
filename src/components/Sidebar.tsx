@@ -14,6 +14,7 @@ const Sidebar = () => {
     { name: 'Customers', icon: Users, path: '/admin/customers' },
     { name: 'Discount', icon: Ticket, path: '/admin/discount' },
     { name: 'Products', icon: Grid, path: '/admin/products' },
+    { name: 'Deals', icon: Grid, path: '/admin/Deals' },
     { name: 'Transaction', icon: CreditCard, path: '/admin/transactions' },
     { name: 'Bulk Upload', icon: Star, path: '/admin/bulk-upload' },
   ];

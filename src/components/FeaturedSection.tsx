@@ -78,7 +78,7 @@ const FeaturedSection = () => {
             className="w-10 h-10 bg-gray-100 hover:bg-[#3BB77E] hover:text-white rounded-full flex items-center justify-center text-gray-500 transition-colors"
           >
             <ArrowLeft size={18} />
-          </button>
+          </button>``
           <button 
             onClick={() => scroll('right')}
             className="w-10 h-10 bg-gray-100 hover:bg-[#3BB77E] hover:text-white rounded-full flex items-center justify-center text-gray-500 transition-colors"
