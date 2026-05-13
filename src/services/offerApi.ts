@@ -2,15 +2,16 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const offerApi = createApi({
     reducerPath: 'offerApi',
-    baseQuery: fetchBaseQuery({
-        baseUrl: import.meta.env.VITE_API_BASE_URL + '/api/deals',
-        prepareHeaders: (headers) => {
-            const token = localStorage.getItem('token');
-            if (token) headers.set('authorization', `Bearer ${token}`);
-            // Headers me JSON allow ho jayega by default
-            return headers;
-        },
-    }),
+    baseQuery: fetchBaseQuery({ 
+            baseUrl: import.meta.env.VITE_API_BASE_URL + '/api/deals',
+            prepareHeaders: (headers) => {
+                const token = localStorage.getItem('token');
+                if (token) {
+                    headers.set('authorization', `Bearer ${token}`);
+                }
+                return headers;
+            },
+        }),
     tagTypes: ['Deal'],
     endpoints: (builder) => ({
         getDeals: builder.query<any, void>({
