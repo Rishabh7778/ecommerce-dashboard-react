@@ -4,7 +4,6 @@ import FeaturedSection from './FeaturedSection';
 import PopularProducts from './PopularProducts';
 import DailyBestSells from './DailyBestSells';
 import DealsOfTheDay from './DealsOfTheDay';
-import TopProductsLists from './TopProductsLists';
 
 
 const ProductsPage = () => {
@@ -18,7 +17,7 @@ const ProductsPage = () => {
             <PopularProducts />
             <DailyBestSells />  
             <DealsOfTheDay /> 
-            <TopProductsLists/>         
+            {/* <TopProductsLists/>          */}
         </div>
     );
 };

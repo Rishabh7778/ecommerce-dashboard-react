@@ -49,7 +49,8 @@ useEffect(() => {
   // API Calls (Limit aur Page pass kar rahe hain)
   const { data: responseData, isLoading: isProductsLoading, error } = useGetAllProductsQuery({ 
       page: currentPage, 
-      limit: productsPerPage 
+      limit: productsPerPage,
+      category: selectedCategory 
   });
   const { data: categories = [], isLoading: isCategoriesLoading } = useGetCategoriesQuery();
 
@@ -58,11 +59,15 @@ useEffect(() => {
   const paginationData = responseData?.pagination;
 
   // Active products filter & Category filter
+// Active products filter & Category filter
   const filteredProducts = useMemo(() => {
     let active = rawProducts.filter((p: any) => p.status === 'active' || p.status === 'published');
+    
     if (selectedCategory) {
-        active = active.filter((p: any) => p.category_id === selectedCategory);
+        // 🔥 FIX: Dono ko Number mein convert karke check karo taaki type mismatch na ho
+        active = active.filter((p: any) => Number(p.category_id) === Number(selectedCategory));
     }
+    
     return active;
   }, [rawProducts, selectedCategory]);
 

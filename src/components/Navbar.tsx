@@ -168,7 +168,7 @@ const Header = () => {
             </a>
             <NavLink to="/" className="flex items-center gap-1 hover:text-green-500 transition-colors">Home </NavLink>
             <NavLink to="/about" className="hover:text-green-500 transition-colors">About</NavLink>
-            <NavLink to="/shop" className="flex items-center gap-1 hover:text-green-500 transition-colors">Shop <ChevronDown size={14} className="text-gray-400" /></NavLink>
+            <NavLink to="/shop" className="flex items-center gap-1 hover:text-green-500 transition-colors">Shop</NavLink>
             <NavLink to="/blog" className="flex items-center gap-1 hover:text-green-500 transition-colors">Blog <ChevronDown size={14} className="text-gray-400" /></NavLink>
             <NavLink to="/contact" className="hover:text-green-500 transition-colors">Contact</NavLink>
           </nav>

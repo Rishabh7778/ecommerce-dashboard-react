@@ -70,7 +70,7 @@ const AddProductForm = () => {
       });
 
       if (editData.img) {
-        setExistingImages([editData.img]); 
+        setExistingImages(editData.img.split(','));
       }
     }
   }, [editData]);
@@ -126,7 +126,7 @@ const AddProductForm = () => {
       });
 
       if (isEditing && existingImages.length > 0) {
-          data.append('existingImage', existingImages[0]);
+          data.append('existingImage', existingImages.join(','));
       }
 
       if (isEditing) {

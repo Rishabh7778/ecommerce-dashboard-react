@@ -49,19 +49,22 @@ export const productApi = createApi({
   tagTypes: ['Product', 'Order', 'Category'],
 
   endpoints: (builder) => ({
-    // --- PRODUCT ENDPOINTS ---
-    // --- PRODUCT ENDPOINTS ---
-    getAllProducts: builder.query<any, { page?: number, limit?: string | number } | void>({
-      // Agar arguments aaye hain toh query string banao, nahi toh normal /getAll
+    getAllProducts: builder.query<any, { page?: number, limit?: string | number, category?: number | null } | void>({
       query: (arg) => {
         if (arg) {
-           const { page = 1, limit = 12 } = arg;
-           return `/products/getAll?page=${page}&limit=${limit}`;
+           const { page = 1, limit = 12, category } = arg;
+           let url = `/products/getAll?page=${page}&limit=${limit}`;
+           
+           // 🔥 Agar user ne category select ki hai, toh URL mein attach kar do
+           if (category) {
+               url += `&category=${category}`;
+           }
+           return url;
         }
         return '/products/getAll';
       },
       providesTags: ['Product'],
-    }),
+  }),
 
     addProduct: builder.mutation<any, FormData>({
       query: (formData) => ({
