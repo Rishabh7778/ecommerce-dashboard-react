@@ -26,7 +26,7 @@ const displayCategories = ["All", ...apiCategories.slice(0, 4).map((c: any) => c
   );
 
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 font-sans">
+    <section className="popular-container mx-auto px-4 sm:px-6 lg:px-8 py-10 font-sans">
       
       {/* HEADER & TABS */}
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">

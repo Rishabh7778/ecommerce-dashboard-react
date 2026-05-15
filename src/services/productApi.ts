@@ -10,6 +10,7 @@ export interface Category {
 }
 
 // --- UPDATED PRODUCT INTERFACE (Matching SQL Schema) ---
+
 export interface Product {
   id?: number;
   title: string;
@@ -17,14 +18,15 @@ export interface Product {
   category_id: number;
   brand: string;
   price: number;
-  discounted_price?: number; // 🔥 Naya field calculated price ke liye
+  discounted_price?: number; 
   oldPrice?: number;
   sku?: string;
-  stockCount?: number;
+  stockCount: number; // (Pichla fix, agar aapne strict kiya tha)
   weight?: string;
   mfgDate?: string;
   expiryDate?: string;
   rating?: number;
+  reviewsCount?: number; // 🔥 YE NAYI LINE ADD KARNI HAI
   badge?: string | null;
   badgeColor?: string | null;
   discount?: number;
@@ -148,6 +150,20 @@ export const productApi = createApi({
       }),
       invalidatesTags: ['Product'],
     }),
+
+    addReview: builder.mutation<any, { product_id: string | number, rating: number, review_text: string }>({
+      query: (data) => ({
+        url: '/products/review',
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['Product'], 
+    }),
+
+    getProductReviews: builder.query<any, string>({
+      query: (id) => `/products/review/${id}`,
+      providesTags: ['Product'], // Taaki naya review aane pe auto-refresh ho
+    }),
   }),
 });
 
@@ -163,5 +179,7 @@ export const {
   useVerifyPaymentMutation,
   useApplyCategoryDiscountMutation,
   useGetProductByIdQuery,
-  useGetDashboardStatsQuery
+  useGetDashboardStatsQuery,
+  useAddReviewMutation,
+  useGetProductReviewsQuery,
 } = productApi;

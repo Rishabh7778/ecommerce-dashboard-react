@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
-.ck-editor__editable_inline {
-  min-height: 200px;
+.feature-container, .Daily-container, .deals-container, .popular-container{
+    max-width: 1200px;
+    width: 100%;
 }
+

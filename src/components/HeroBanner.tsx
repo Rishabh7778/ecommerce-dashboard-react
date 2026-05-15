@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import banner2 from '../assets/images/banner2.png';
+import fruitsBanner from '../assets/images/fruits-banner.webp';
+import icecream from '../assets/images/icecream.webp';
+
 
 const slides = [
   {
@@ -8,20 +11,20 @@ const slides = [
     title: "Fresh Vegetables\nBig discount",
     subtitle: "Save up to 50% off on your first order",
     image: banner2,
-    bgColor: "bg-[#e3f4e6]" // Light Green
+    bgColor: "bg-[#e3f4e6]"
   },
   {
     id: 2,
     title: "Organic Fruits\nFarm to Table",
     subtitle: "100% natural and freshly picked daily",
-    image: "https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=700&q=80",
+    image: fruitsBanner,
     bgColor: "bg-[#fceee1]" // Light Orange/Peach
   },
   {
     id: 3,
     title: "Everyday Groceries\nBest Prices",
     subtitle: "Get free delivery on orders over $50",
-    image: "https://images.unsplash.com/photo-1583258292688-d0213dc5a3a8?auto=format&fit=crop&w=700&q=80",
+    image: icecream,
     bgColor: "bg-[#e6f2f5]" // Light Blue
   }
 ];

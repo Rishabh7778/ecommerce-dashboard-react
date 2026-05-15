@@ -149,7 +149,7 @@ const DealsOfTheDay = () => {
   if (dealsList.length === 0) return null;
 
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 font-sans" id="deals-of-the-day">
+    <section className="deals-container mx-auto px-4 sm:px-6 lg:px-8 py-10 font-sans" id="deals-of-the-day">
       
       {/* Header & Navigation */}
       <div className="flex items-center justify-between mb-10">
