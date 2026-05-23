@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { UserProtectedRoute, AdminProtectedRoute } from './components/AuthGuards'; 
+// 🔥 Naya guard import kiya
+import { UserProtectedRoute, AdminProtectedRoute, HideWebsiteFromAdmin } from './components/AuthGuards'; 
 
-// Layouts & Pages...
 import AdminLayout from './components/layouts/AdminLayout';
 import UserLayout from './components/layouts/UserLayout';
 import AdminDashboard from './pages/AdminDashboard';
@@ -16,6 +16,7 @@ import UserAccount from './pages/UserAccount';
 import OrderManagement from './components/OrderManagement';
 import AdminCustomers from './components/AdminCustomers';
 import NotFound from './pages/NotFound';
+import Wishlist from './components/Wishlist';
 import AdminDiscount from './components/AdminDiscount';
 import Transactions from './components/AdminTransaction';
 import AdminProducts from './components/AdminProducts';
@@ -23,35 +24,41 @@ import AddDailyDealWidget from './components/AddDailyDealWidget';
 import AboutPage from './components/About';
 import ContactPage from './components/ContactPage';
 import AdminDeals from './components/AdminDeals';
+import ScrollToTop from './components/ScrollToTop';
+import AdminContactSection from './components/AdminContactSection';
 
 function App() {
   return (
     <BrowserRouter>
+        <ScrollToTop />
       <Routes>
-        {/* Public Route: Koi bhi khol sakta hai */}
         <Route path="/login" element={<Login />} />
 
         {/* ==========================================
-             USER ROUTES (Protected)
+             USER ROUTES (Website)
         ========================================== */}
-        <Route element={<UserLayout />}>
-          {/* Public Pages: Bina login ke dikhengi */}
-          <Route path="/" element={<Home />} />
-          <Route path="/shop" element={<ShopPage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/contact" element={<ContactPage />} />
-          <Route path="/product/:id" element={<ProductDetailsPage />} />
+        {/* 🔥 Yahan HideWebsiteFromAdmin wrap kiya gaya hai */}
+        <Route element={<HideWebsiteFromAdmin />}>
+          <Route element={<UserLayout />}>
+            {/* Public Pages */}
+            <Route path="/" element={<Home />} />
+            <Route path="/shop" element={<ShopPage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/product/:id" element={<ProductDetailsPage />} />
 
-          {/* Private User Pages: Sirf login ke baad dikhengi */}
-          <Route element={<UserProtectedRoute />}>
-             <Route path="/cart" element={<ShoppingCart />} />
-             <Route path="/account" element={<UserAccount />} />
+            {/* Private User Pages */}
+            <Route element={<UserProtectedRoute />}>
+               <Route path="/cart" element={<ShoppingCart />} />
+               <Route path="/wishlist" element={<Wishlist />} />
+               <Route path="/account" element={<UserAccount />} />
+            </Route>
           </Route>
         </Route>
 
         {/* ==========================================
-             ADMIN ROUTES (Strictly Protected)
-             ========================================== */}
+             ADMIN ROUTES (Dashboard)
+        ========================================== */}
         <Route element={<AdminProtectedRoute />}>
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AdminDashboard />} />
@@ -64,10 +71,10 @@ function App() {
              <Route path="discount" element={<AdminDiscount />} />
              <Route path="transactions" element={<Transactions />} />
              <Route path="daily-deals" element={<AddDailyDealWidget />} />
+             <Route path="contact" element={<AdminContactSection />} />
           </Route>
         </Route>
 
-        {/* Page Not Found Logic */}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>

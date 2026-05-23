@@ -52,22 +52,30 @@ const AdminDeals = () => {
                 <h1 className="text-2xl font-bold text-[#253D4E] mb-6">Active Deals of the Day</h1>
                 {isLoadingDeals ? <p>Loading deals...</p> : (
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        {activeDeals.map((deal: any) => (
-                            <div key={deal.id} className="border rounded-xl p-4 shadow-sm bg-white relative">
-                                <button 
-                                    onClick={() => deleteDeal(deal.id)} 
-                                    className="absolute top-2 right-2 text-red-500 bg-red-50 p-1.5 rounded-full hover:bg-red-100"
-                                >
-                                    <Trash2 size={16} />
-                                </button>
-                                <img src={deal.img} alt={deal.title} className="w-full h-32 object-cover rounded-md mb-3" />
-                                <h3 className="font-bold text-sm line-clamp-1">{deal.title}</h3>
-                                <p className="text-[#3BB77E] font-bold mt-1">${deal.price} <span className="line-through text-gray-400 text-xs">${deal.oldPrice}</span></p>
-                                <div className="mt-2 text-xs flex items-center gap-1 text-orange-500 font-medium bg-orange-50 p-1.5 rounded">
-                                    <Clock size={14} /> Ends: {new Date(deal.targetDate).toLocaleString()}
+                        {activeDeals.map((deal: any) => {
+                            // 🔥 FIX 1: Split string to get first image safely
+                            const dealImage = deal.img ? deal.img.split(',')[0] : '';
+
+                            return (
+                                <div key={deal.id} className="border rounded-xl p-4 shadow-sm bg-white relative">
+                                    <button 
+                                        onClick={() => deleteDeal(deal.id)} 
+                                        className="absolute top-2 right-2 text-red-500 bg-red-50 p-1.5 rounded-full hover:bg-red-100"
+                                    >
+                                        <Trash2 size={16} />
+                                    </button>
+                                    
+                                    {/* Updated Image Tag */}
+                                    <img src={dealImage} alt={deal.title} className="w-full h-32 object-cover rounded-md mb-3 bg-gray-50" />
+                                    
+                                    <h3 className="font-bold text-sm line-clamp-1">{deal.title}</h3>
+                                    <p className="text-[#3BB77E] font-bold mt-1">${deal.price} <span className="line-through text-gray-400 text-xs">${deal.oldPrice}</span></p>
+                                    <div className="mt-2 text-xs flex items-center gap-1 text-orange-500 font-medium bg-orange-50 p-1.5 rounded">
+                                        <Clock size={14} /> Ends: {new Date(deal.targetDate).toLocaleString()}
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 )}
             </section>
@@ -93,11 +101,15 @@ const AdminDeals = () => {
                                 {products.map((prod: any) => {
                                     // Check if product is already a deal
                                     const isAlreadyDeal = activeDeals.some((d: any) => d.title === prod.title);
+                                    
+                                    // 🔥 FIX 2: Split string to get first image safely
+                                    const prodImage = prod.img ? prod.img.split(',')[0] : '';
 
                                     return (
                                         <tr key={prod.id} className="hover:bg-gray-50 transition-colors">
                                             <td className="p-3 border-b">
-                                                <img src={prod.img} alt="img" className="w-12 h-12 object-cover rounded" />
+                                                {/* Updated Image Tag */}
+                                                <img src={prodImage} alt="img" className="w-12 h-12 object-cover rounded bg-gray-50" />
                                             </td>
                                             <td className="p-3 border-b font-medium text-sm">{prod.title}</td>
                                             <td className="p-3 border-b text-sm text-gray-500">

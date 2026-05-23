@@ -1,5 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
 import cartReducer from "../features/cartSlice";
+
+// 🔥 1. YAHAN WISHLIST REDUCER IMPORT KIYA HAI
+import wishlistReducer from "../features/wishlistSlice";
+
 import { productApi } from "../services/productApi";
 import { authApi } from "../services/authApi";
 import { addressApi } from "../services/addressApi";
@@ -9,23 +13,22 @@ import { discountApi } from "../services/discountApi";
 import { categoryApi } from "../services/categoryApi";
 import { userApi } from "../services/userApi";
 import { offerApi } from "../services/offerApi";
+import {contactApi} from "../services/contactApi";
 
-
-// 1. Local storage se data load karne ka function
-const loadState = () => {
+// ==========================================
+// CART STORAGE LOGIC
+// ==========================================
+const loadCartState = () => {
   try {
     const serializedState = localStorage.getItem("cartState");
-    if (serializedState === null) {
-      return undefined;
-    }
+    if (serializedState === null) return undefined;
     return JSON.parse(serializedState);
   } catch (err) {
     return undefined;
   }
 };
 
-// 2. Data save karne ka function
-const saveState = (state: any) => {
+const saveCartState = (state: any) => {
   try {
     const serializedState = JSON.stringify(state);
     localStorage.setItem("cartState", serializedState);
@@ -34,9 +37,35 @@ const saveState = (state: any) => {
   }
 };
 
+// ==========================================
+// 🔥 WISHLIST STORAGE LOGIC (Naya Add Kiya)
+// ==========================================
+const loadWishlistState = () => {
+  try {
+    const serializedState = localStorage.getItem("wishlistState");
+    if (serializedState === null) return undefined;
+    return JSON.parse(serializedState);
+  } catch (err) {
+    return undefined;
+  }
+};
+
+const saveWishlistState = (state: any) => {
+  try {
+    const serializedState = JSON.stringify(state);
+    localStorage.setItem("wishlistState", serializedState);
+  } catch (err) {
+    // Ignore write errors
+  }
+};
+
+// ==========================================
+// STORE CONFIGURATION
+// ==========================================
 const store = configureStore({
   reducer: {
     cart: cartReducer,
+    wishlist: wishlistReducer, // 🔥 Error yahin tha, ab fix ho gaya import ke sath
     [productApi.reducerPath]: productApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [addressApi.reducerPath]: addressApi.reducer,
@@ -46,21 +75,33 @@ const store = configureStore({
     [categoryApi.reducerPath]: categoryApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
     [offerApi.reducerPath]: offerApi.reducer, 
-
+    [contactApi.reducerPath]: contactApi.reducer,
   },
   preloadedState: {
-    cart: loadState() // App start hone par yahan se data aayega
+    cart: loadCartState(), 
+    wishlist: loadWishlistState(), // 🔥 App start hone par Wishlist bhi localStorage se aayegi
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(productApi.middleware, authApi.middleware, addressApi.middleware, orderApi.middleware, complaintApi.middleware, discountApi.middleware, categoryApi.middleware, userApi.middleware, offerApi.middleware), 
+    getDefaultMiddleware().concat(
+      productApi.middleware, 
+      authApi.middleware, 
+      addressApi.middleware, 
+      orderApi.middleware, 
+      complaintApi.middleware, 
+      discountApi.middleware, 
+      categoryApi.middleware, 
+      userApi.middleware, 
+      offerApi.middleware,
+      contactApi.middleware
+    ), 
 });
 
-// 3. Jab bhi store change hoga, hum usko localStorage me save kar denge
+// 🔥 Jab bhi store update hoga, Cart aur Wishlist dono save honge
 store.subscribe(() => {
-  saveState(store.getState().cart);
+  saveCartState(store.getState().cart);
+  saveWishlistState(store.getState().wishlist);
 });
 
-// Types  export karna zaroori hai TypeScript use karte waqt
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 

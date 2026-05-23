@@ -1,12 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import type { RootState } from '../store/store';
 import { Star, Heart, Loader2, ChevronRight } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
+import { toggleWishlist } from '../features/wishlistSlice';
 import { addToCart } from '../features/cartSlice';
-import { 
-    useGetProductByIdQuery, 
-    useAddReviewMutation, 
-    useGetProductReviewsQuery 
+import {
+    useGetProductByIdQuery,
+    useAddReviewMutation,
+    useGetProductReviewsQuery
 } from '../services/productApi';
 
 const ProductDetailsPage = () => {
@@ -15,12 +17,14 @@ const ProductDetailsPage = () => {
 
     // 🔥 DYNAMIC LOGIN CHECK
     const token = useSelector((state: any) => state.auth?.token) || localStorage.getItem('token');
-    const isLoggedIn = !!token; 
+    const isLoggedIn = !!token;
+
+    const wishlistItems = useSelector((state: RootState) => state.wishlist?.wishlistItems || []);
 
     // API Calls
     const { data: product, isLoading, error } = useGetProductByIdQuery(id as string);
-    const { data: reviewsData } = useGetProductReviewsQuery(id as string); 
-    const [submitReview, { isLoading: isReviewSubmitting }] = useAddReviewMutation(); 
+    const { data: reviewsData } = useGetProductReviewsQuery(id as string);
+    const [submitReview, { isLoading: isReviewSubmitting }] = useAddReviewMutation();
 
     const reviews = reviewsData?.reviews || [];
 
@@ -29,7 +33,7 @@ const ProductDetailsPage = () => {
     const [imagesArray, setImagesArray] = useState<string[]>([]);
     const [showZoom, setShowZoom] = useState(false);
     const [zoomPos, setZoomPos] = useState({ x: 0, y: 0 });
-    
+
     // State Management for Reviews
     const [rating, setRating] = useState(5);
     const [reviewText, setReviewText] = useState('');
@@ -37,10 +41,13 @@ const ProductDetailsPage = () => {
     const imageContainerRef = useRef<HTMLDivElement>(null);
     const reviewsRef = useRef<HTMLDivElement>(null);
 
+
+    const isWishlisted = wishlistItems.some(i => i.id === product?.id); // 🔥 product ke baad '?' zaroor lagayein
+
     // Image setup on load
     useEffect(() => {
         if (product && product.img) {
-            const imgs = product.img.split(','); 
+            const imgs = product.img.split(',');
             setImagesArray(imgs);
             setMainImage(imgs[0] || '');
         } else if (product) {
@@ -84,12 +91,12 @@ const ProductDetailsPage = () => {
             alert("Review text cannot be empty!");
             return;
         }
-        
+
         try {
             await submitReview({ product_id: id!, rating, review_text: reviewText }).unwrap();
             alert("Review successfully added!");
-            setReviewText(''); 
-            setRating(5); 
+            setReviewText('');
+            setRating(5);
         } catch (err: any) {
             alert(err.data?.message || "Failed to submit review");
         }
@@ -100,16 +107,16 @@ const ProductDetailsPage = () => {
 
     const currentPrice = Number(product.discounted_price || product.price).toFixed(2);
     const originalPrice = Number(product.price).toFixed(2);
-    
+
     // 🔥 STOCK LOGIC
     const stockCount = product.stockCount || 0;
     const isOutOfStock = stockCount <= 0;
-    const isLowStock = stockCount > 0 && stockCount < 5; 
+    const isLowStock = stockCount > 0 && stockCount < 5;
 
     // 🔥 DYNAMIC RATING MATH
     const totalReviews = reviews.length;
-    const averageRating = totalReviews > 0 
-        ? (reviews.reduce((sum: number, rev: any) => sum + rev.rating, 0) / totalReviews).toFixed(1) 
+    const averageRating = totalReviews > 0
+        ? (reviews.reduce((sum: number, rev: any) => sum + rev.rating, 0) / totalReviews).toFixed(1)
         : (product.rating || 0).toFixed(1);
 
     return (
@@ -133,18 +140,17 @@ const ProductDetailsPage = () => {
             </div>
 
             <div className="flex flex-col lg:flex-row gap-10 relative">
-                
+
                 {/* LEFT: Image Gallery */}
-                <div className="w-full lg:w-1/2 flex flex-col-reverse md:flex-row gap-4">
+                <div className="w-full lg:w-1/2 flex flex-col-reverse md:flex-row gap-4 product-gallery">
                     <div className="flex md:flex-col gap-3 overflow-auto hide-scroll w-full md:w-20">
                         {imagesArray.map((thumb, idx) => (
-                            <div 
-                                key={idx} 
+                            <div
+                                key={idx}
                                 onMouseEnter={() => setMainImage(thumb)}
                                 onClick={() => setMainImage(thumb)}
-                                className={`cursor-pointer border-2 p-1 h-20 w-20 flex-shrink-0 flex items-center justify-center rounded transition-all bg-white ${
-                                    mainImage === thumb ? 'border-green-500' : 'border-gray-200 hover:border-gray-300'
-                                }`}
+                                className={`cursor-pointer border-2 p-1 h-20 w-20 flex-shrink-0 flex items-center justify-center rounded transition-all bg-white ${mainImage === thumb ? 'border-green-500' : 'border-gray-200 hover:border-gray-300'
+                                    }`}
                             >
                                 <img src={thumb} alt={`Thumb ${idx}`} className="max-h-full object-contain" />
                             </div>
@@ -152,10 +158,10 @@ const ProductDetailsPage = () => {
                     </div>
 
                     <div className="flex-1 relative bg-white border border-gray-100 rounded flex items-center justify-center group"
-                         ref={imageContainerRef}
-                         onMouseEnter={() => setShowZoom(true)}
-                         onMouseLeave={() => setShowZoom(false)}
-                         onMouseMove={handleMouseMove}
+                        ref={imageContainerRef}
+                        onMouseEnter={() => setShowZoom(true)}
+                        onMouseLeave={() => setShowZoom(false)}
+                        onMouseMove={handleMouseMove}
                     >
                         <img src={mainImage || undefined} alt={product.title} className="max-h-[500px] w-full object-contain cursor-crosshair" />
                         {showZoom && (
@@ -170,7 +176,7 @@ const ProductDetailsPage = () => {
                     <h2 className="text-xl text-gray-500 mb-4">{product.title}</h2>
 
                     {/* 🔥 DYNAMIC RATING PILL */}
-                    <div 
+                    <div
                         onClick={handleRatingClick}
                         className="inline-flex items-center gap-2 border border-gray-300 rounded px-3 py-1.5 w-max cursor-pointer hover:border-gray-400 transition-colors mb-6 shadow-sm"
                     >
@@ -203,17 +209,28 @@ const ProductDetailsPage = () => {
                     ) : null}
 
                     <div className="flex gap-4 mb-8 mt-2">
-                        <button 
+                        <button
                             disabled={isOutOfStock}
-                            onClick={handleAddToCart} 
-                            className={`flex-1 h-12 font-bold rounded flex items-center justify-center gap-2 transition-colors ${
-                                isOutOfStock ? 'bg-gray-300 text-white cursor-not-allowed' : 'bg-[#ff3e6c] hover:bg-[#e0355f] text-white shadow-md'
-                            }`}
+                            onClick={handleAddToCart}
+                            className={`flex-1 h-12 font-bold rounded flex items-center justify-center gap-2 transition-colors ${isOutOfStock ? 'bg-gray-300 text-white cursor-not-allowed' : 'bg-[#ff3e6c] hover:bg-[#e0355f] text-white shadow-md'
+                                }`}
                         >
                             {isOutOfStock ? 'OUT OF STOCK' : 'ADD TO BAG'}
                         </button>
-                        <button className="flex-1 h-12 border border-gray-300 rounded flex items-center justify-center gap-2 font-bold text-gray-700 hover:border-gray-400 transition-colors bg-white">
-                            <Heart size={18} /> WISHLIST
+                        <button
+                            onClick={() => dispatch(toggleWishlist({
+                                id: product.id!,
+                                title: product.title,
+                                price: Number(product.discounted_price || product.price),
+                                img: imagesArray[0] || ''
+                            }))}
+                            className="p-2 rounded-full border bg-white hover:bg-gray-50 transition-colors shadow-sm"
+                        >
+                            {/* 🔥 YEH HEART ICON MAIN PICHHLI BAAR BHOOL GAYA THA */}
+                            <Heart
+                                fill={isWishlisted ? "red" : "none"}
+                                className={isWishlisted ? "text-red-500" : "text-gray-400"}
+                            />
                         </button>
                     </div>
 
@@ -242,38 +259,37 @@ const ProductDetailsPage = () => {
             {/* RATINGS & REVIEWS SECTION */}
             <div ref={reviewsRef} className="mt-20 border-t pt-10">
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">Ratings & Reviews</h2>
-                
+
                 {isLoggedIn ? (
                     <div className="bg-gray-50 p-6 rounded border border-gray-200 mb-8">
                         <p className="text-gray-700 mb-4 font-semibold">Leave your review here...</p>
-                        
+
                         <div className="flex gap-1 mb-4 cursor-pointer">
                             {[1, 2, 3, 4, 5].map((star) => (
-                                <Star 
-                                    key={star} 
-                                    size={28} 
-                                    fill={rating >= star ? "#f59e0b" : "none"} 
+                                <Star
+                                    key={star}
+                                    size={28}
+                                    fill={rating >= star ? "#f59e0b" : "none"}
                                     color={rating >= star ? "#f59e0b" : "#d1d5db"}
-                                    onClick={() => setRating(star)} 
+                                    onClick={() => setRating(star)}
                                     className="transition-colors"
                                 />
                             ))}
                         </div>
-                        
-                        <textarea 
-                            className="w-full border border-gray-300 p-3 rounded mb-4 outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all" 
-                            rows={4} 
+
+                        <textarea
+                            className="w-full border border-gray-300 p-3 rounded mb-4 outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all"
+                            rows={4}
                             placeholder="Write your experience with this product..."
                             value={reviewText}
                             onChange={(e) => setReviewText(e.target.value)}
                         />
-                        
-                        <button 
+
+                        <button
                             onClick={handleReviewSubmit}
                             disabled={isReviewSubmitting}
-                            className={`font-bold py-3 px-8 rounded flex items-center gap-2 transition-colors ${
-                                isReviewSubmitting ? 'bg-gray-400 cursor-not-allowed text-white' : 'bg-green-500 hover:bg-green-600 text-white shadow-sm'
-                            }`}
+                            className={`font-bold py-3 px-8 rounded flex items-center gap-2 transition-colors ${isReviewSubmitting ? 'bg-gray-400 cursor-not-allowed text-white' : 'bg-green-500 hover:bg-green-600 text-white shadow-sm'
+                                }`}
                         >
                             {isReviewSubmitting ? <Loader2 className="animate-spin" size={18} /> : null}
                             {isReviewSubmitting ? 'Posting...' : 'Post Review'}

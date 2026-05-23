@@ -18,7 +18,7 @@ export interface Product {
   category_id: number;
   brand: string;
   price: number;
-  discounted_price?: number; 
+  discounted_price?: number;
   oldPrice?: number;
   sku?: string;
   stockCount: number; // (Pichla fix, agar aapne strict kiya tha)
@@ -38,35 +38,35 @@ export interface Product {
 
 export const productApi = createApi({
   reducerPath: 'productApi',
-  baseQuery: fetchBaseQuery({ 
-        baseUrl: import.meta.env.VITE_API_BASE_URL + '/api',
-        prepareHeaders: (headers) => {
-            const token = localStorage.getItem('token');
-            if (token) {
-                headers.set('authorization', `Bearer ${token}`);
-            }
-            return headers;
-        },
-    }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: import.meta.env.VITE_API_BASE_URL + '/api',
+    prepareHeaders: (headers) => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        headers.set('authorization', `Bearer ${token}`);
+      }
+      return headers;
+    },
+  }),
   tagTypes: ['Product', 'Order', 'Category'],
 
   endpoints: (builder) => ({
     getAllProducts: builder.query<any, { page?: number, limit?: string | number, category?: number | null } | void>({
       query: (arg) => {
         if (arg) {
-           const { page = 1, limit = 12, category } = arg;
-           let url = `/products/getAll?page=${page}&limit=${limit}`;
-           
-           // 🔥 Agar user ne category select ki hai, toh URL mein attach kar do
-           if (category) {
-               url += `&category=${category}`;
-           }
-           return url;
+          const { page = 1, limit = 12, category } = arg;
+          let url = `/products/getAll?page=${page}&limit=${limit}`;
+
+          // 🔥 Agar user ne category select ki hai, toh URL mein attach kar do
+          if (category) {
+            url += `&category=${category}`;
+          }
+          return url;
         }
         return '/products/getAll';
       },
       providesTags: ['Product'],
-  }),
+    }),
 
     addProduct: builder.mutation<any, FormData>({
       query: (formData) => ({
@@ -157,7 +157,7 @@ export const productApi = createApi({
         method: 'POST',
         body: data,
       }),
-      invalidatesTags: ['Product'], 
+      invalidatesTags: ['Product'],
     }),
 
     getProductReviews: builder.query<any, string>({

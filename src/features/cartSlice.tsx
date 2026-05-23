@@ -30,7 +30,7 @@ const cartSlice = createSlice({
       } else {
         state.cartItems.push({ ...action.payload, quantity: 1 });
       }
-      console.log("Product added/updated in cart:", action.payload);
+      // console.log("Product added/updated in cart:", action.payload);
     },
     removeFromCart: (state, action: PayloadAction<number>) => {
       state.cartItems = state.cartItems.filter(

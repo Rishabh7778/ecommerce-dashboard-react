@@ -1,87 +1,70 @@
-import  { useState } from 'react';
-import { ShoppingCart, Star, Loader2 } from 'lucide-react';
-import bean from '../assets/images/Bean.png'; // Fallback image
+import { useMemo } from 'react';
+import { ShoppingCart, Star, Loader2, ArrowRight } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { addToCart } from '../features/cartSlice'; 
 
-// 🔥 API Hooks Import karein (Apne path ke hisaab se adjust kar lein)
-import { useGetAllProductsQuery, useGetCategoriesQuery } from '../services/productApi';
+import bean from '../assets/images/Bean.png'; 
+
+// API Hooks Import
+import { useGetAllProductsQuery } from '../services/productApi';
 
 const PopularProducts = () => {
-  const [activeTab, setActiveTab] = useState("All");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  // --- API CALLS ---
-  // Popular section ke liye hum limit 10 bhej rahe hain (aap isko hata bhi sakte hain)
-  const { data: productsData, isLoading: isLoadingProducts, isError: isErrorProducts } = useGetAllProductsQuery({ limit: 10 });
-  const { data: categoriesData, isLoading: isLoadingCats } = useGetCategoriesQuery();
+  // --- API CALLS (Category completely removed, just fetching top 10 products) ---
+  const { data: productsData, isLoading, isError } = useGetAllProductsQuery({ limit: 10 });
 
   // Safely extract data
-  const allProducts = Array.isArray(productsData) ? productsData : productsData?.products || [];
-  const apiCategories = categoriesData || [];
-
-  // "All" tab ko list ke shuru mein add karne ke liye
-const displayCategories = ["All", ...apiCategories.slice(0, 4).map((c: any) => c.name)];
-
-  // --- FILTER LOGIC ---
-  const filteredProducts = allProducts.filter(
-    (product: any) => activeTab === "All" || product.category_name === activeTab
-  );
+  const productsToDisplay = useMemo(() => Array.isArray(productsData) ? productsData : productsData?.products || [], [productsData]);
 
   return (
-    <section className="popular-container mx-auto px-4 sm:px-6 lg:px-8 py-10 font-sans">
+    <section className="popular-container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 font-sans">
       
-      {/* HEADER & TABS */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
-        <h2 className="text-2xl md:text-3xl font-bold text-[#253D4E]">Popular Products</h2>
-        
-        {/* Scrollable Tabs for Mobile */}
-        <div className="flex gap-4 md:gap-6 overflow-x-auto pb-2 md:pb-0" style={{ scrollbarWidth: 'none' }}>
-          {isLoadingCats ? (
-             <span className="text-sm font-semibold text-gray-400">Loading Categories...</span>
-          ) : (
-            displayCategories.map((category) => (
-              <button
-                key={category}
-                onClick={() => setActiveTab(category)}
-                className={`whitespace-nowrap text-sm font-semibold transition-colors ${
-                  activeTab === category 
-                    ? "text-[#3BB77E]" 
-                    : "text-gray-600 hover:text-[#3BB77E] hover:-translate-y-0.5 transition-transform"
-                }`}
-              >
-                {category}
-              </button>
-            ))
-          )}
+      {/* PREMIUM HEADER SECTION */}
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
+        <div>
+          <h2 className="text-3xl md:text-4xl font-extrabold text-[#253D4E] mb-2 tracking-tight">
+            Popular Products
+          </h2>
+          <p className="text-gray-500 text-sm md:text-base font-medium">
+            Don't miss the current offers on our best-selling items.
+          </p>
         </div>
+        <Link 
+          to="/shop" 
+          className="inline-flex items-center gap-1.5 text-[#3BB77E] font-bold hover:text-[#2fa06c] hover:underline transition-all"
+        >
+          View All <ArrowRight size={18} />
+        </Link>
       </div>
 
       {/* ERROR OR LOADING STATE */}
-      {isLoadingProducts && (
+      {isLoading && (
         <div className="w-full flex justify-center items-center py-20">
           <Loader2 className="animate-spin text-[#3BB77E] w-12 h-12" />
         </div>
       )}
       
-      {isErrorProducts && (
-        <div className="text-center py-10 text-red-500 font-semibold">
+      {isError && (
+        <div className="text-center py-10 bg-red-50 text-red-500 rounded-xl font-bold border border-red-100">
           Failed to load products. Please check your connection.
         </div>
       )}
 
       {/* PRODUCT GRID */}
-      {/* 1 col mobile, 2 tablet, 3-4 laptop, 5 desktop */}
-      {!isLoadingProducts && !isErrorProducts && (
+      {!isLoading && !isError && (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-          {filteredProducts.length === 0 ? (
-            <div className="col-span-full text-center py-10 text-gray-500">
-              No products found in this category.
+          {productsToDisplay.length === 0 ? (
+            <div className="col-span-full text-center py-10 text-gray-500 font-medium bg-gray-50 rounded-xl border border-dashed border-gray-200">
+              No products available right now.
             </div>
           ) : (
-            filteredProducts.map((product: any) => {
-              // --- DYNAMIC DATA FORMATTING ---
-              // Agar multiple images hain, toh pehli image nikalenge
-              const productImage = product.img ? product.img.split(',')[0] : bean;
+            productsToDisplay.map((product: any) => {
               
-              // Price Logic: Agar category discount ki wajah se price kam hai, toh asli price "oldPrice" ban jayega
+              // Format product data
+              const productImage = product.img ? product.img.split(',')[0] : bean;
               const currentPrice = product.discounted_price || product.price;
               const crossedPrice = (product.discounted_price && product.discounted_price < product.price) 
                                     ? product.price 
@@ -90,49 +73,56 @@ const displayCategories = ["All", ...apiCategories.slice(0, 4).map((c: any) => c
               return (
                 <div 
                   key={product.id} 
-                  className="group relative bg-white border border-gray-200 rounded-[1.2rem] p-4 hover:border-[#3BB77E] hover:shadow-[0_10px_20px_rgba(0,0,0,0.04)] transition-all duration-300 flex flex-col h-full"
+                  className="group relative bg-white border border-gray-100 rounded-2xl p-4 hover:border-[#3BB77E]/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full"
                 >
-                  {/* Badges */}
-                  {product.badge && product.badge !== 'None' && (
-                    <span 
-                      className="absolute top-0 left-0 text-white text-[11px] font-bold px-3 py-1.5 rounded-tl-[1.1rem] rounded-br-[1.1rem] z-10"
-                      style={{ backgroundColor: product.badgeColor || '#3BB77E' }}
-                    >
-                      {product.badge}
-                    </span>
-                  )}
-                  {/* Agar product par alag se koi discount % hai toh usko right me dikha do */}
-                  {product.discount > 0 && (
-                    <span className="absolute top-0 right-0 bg-[#f74b81] text-white text-[11px] font-bold px-3 py-1.5 rounded-tr-[1.1rem] rounded-bl-[1.1rem] z-10">
-                      -{product.discount}%
-                    </span>
-                  )}
+                  {/* Image Container with Light Background */}
+                  <div 
+                    onClick={() => navigate(`/product/${product.id}`)}
+                    className="w-full aspect-square mb-4 relative overflow-hidden rounded-xl bg-[#f8f9fa] flex items-center justify-center cursor-pointer p-4 group-hover:bg-[#f0f2f5] transition-colors"
+                  >
+                    {/* Badges positioned inside the image box for cleaner look */}
+                    {product.badge && product.badge !== 'None' && (
+                      <span 
+                        className="absolute top-2 left-2 text-white text-[10px] font-black tracking-wider uppercase px-2.5 py-1 rounded-md z-10 shadow-sm"
+                        style={{ backgroundColor: product.badgeColor || '#3BB77E' }}
+                      >
+                        {product.badge}
+                      </span>
+                    )}
+                    
+                    {product.discount > 0 && (
+                      <span className="absolute top-2 right-2 bg-[#f74b81] text-white text-[11px] font-bold px-2 py-1 rounded-md z-10 shadow-sm">
+                        -{product.discount}%
+                      </span>
+                    )}
 
-                  {/* Product Image */}
-                  <div className="w-full h-48 mb-4 relative overflow-hidden rounded-xl flex items-center justify-center">
                     <img 
                       src={productImage} 
                       alt={product.title} 
-                      className="max-h-full max-w-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-500"
+                      className="max-h-full max-w-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-500"
                     />
                   </div>
 
                   {/* Product Details */}
                   <div className="flex flex-col flex-1">
-                    <span className="text-[11px] text-gray-400 mb-1">{product.category_name || 'General'}</span>
-                    <h3 className="text-[15px] font-bold text-[#253D4E] leading-snug mb-2 hover:text-[#3BB77E] cursor-pointer line-clamp-2">
-                      {product.title}
-                    </h3>
+                    <span className="text-[11px] text-gray-400 font-medium tracking-wide uppercase mb-1.5">
+                      {product.category_name || 'General'}
+                    </span>
                     
-                    {/* Rating (Assuming a default of 4 or 5 if not in DB yet) */}
-                    <div className="flex items-center gap-2 mb-2">
+                    <Link to={`/product/${product.id}`}>
+                        <h3 className="text-[15px] font-bold text-[#253D4E] leading-snug mb-2 hover:text-[#3BB77E] transition-colors line-clamp-2">
+                          {product.title}
+                        </h3>
+                    </Link>
+                    
+                    <div className="flex items-center gap-1.5 mb-3">
                       <div className="flex text-[#fdc040]">
                         {[...Array(5)].map((_, i) => {
-                          const rating = product.rating || 4; // Default to 4
+                          const rating = product.rating || 4; 
                           return (
                             <Star 
                               key={i} 
-                              size={12} 
+                              size={14} 
                               fill={i < Math.floor(rating) ? "currentColor" : "none"} 
                               strokeWidth={i < Math.floor(rating) ? 0 : 2} 
                               className={i >= Math.floor(rating) ? "text-gray-300" : ""} 
@@ -140,25 +130,36 @@ const displayCategories = ["All", ...apiCategories.slice(0, 4).map((c: any) => c
                           );
                         })}
                       </div>
-                      <span className="text-xs text-gray-400">(4.0)</span>
+                      <span className="text-xs text-gray-400 font-medium">(4.0)</span>
                     </div>
 
-                    {/* Brand */}
-                    <p className="text-xs text-gray-400 mb-4 mt-auto">
+                    <p className="text-xs text-gray-500 mb-4 mt-auto font-medium">
                       By <span className="text-[#3BB77E] cursor-pointer hover:underline">{product.brand || 'Generic'}</span>
                     </p>
 
-                    {/* Bottom Row: Price & Button */}
+                    {/* Bottom Row: Price & Add Button */}
                     <div className="flex items-center justify-between mt-auto">
-                      <div className="flex items-end gap-2">
-                        <span className="text-lg font-bold text-[#3BB77E]">₹{Number(currentPrice).toFixed(2)}</span>
+                      <div className="flex flex-col">
+                        <span className="text-lg font-black text-[#3BB77E] leading-none">
+                          ₹{Number(currentPrice).toFixed(2)}
+                        </span>
                         {crossedPrice && (
-                          <span className="text-sm font-medium text-gray-400 line-through mb-0.5">₹{Number(crossedPrice).toFixed(2)}</span>
+                          <span className="text-xs font-bold text-gray-400 line-through mt-1">
+                            ₹{Number(crossedPrice).toFixed(2)}
+                          </span>
                         )}
                       </div>
                       
-                      <button className="bg-[#def9ec] hover:bg-[#3BB77E] text-[#3BB77E] hover:text-white px-3 py-1.5 rounded flex items-center gap-1.5 font-bold text-xs transition-colors duration-300">
-                        <ShoppingCart size={14} /> Add
+                      <button 
+                        onClick={() => dispatch(addToCart({
+                          ...product,
+                          id: product.id,
+                          price: currentPrice,
+                          img: productImage
+                        }))}
+                        className="bg-green-50 hover:bg-[#3BB77E] text-[#3BB77E] hover:text-white px-4 py-2 rounded-lg flex items-center gap-2 font-bold text-xs transition-all duration-300 active:scale-95"
+                      >
+                        <ShoppingCart size={15} /> Add
                       </button>
                     </div>
                   </div>

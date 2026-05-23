@@ -19,25 +19,23 @@ const newProducts = [
 
 
 const ShopPage = () => {
-const [isGridView, setIsGridView] = useState(true);
+  const [isGridView, setIsGridView] = useState(true);
   const [showMobileSidebar, setShowMobileSidebar] = useState(false);
   const [searchParams] = useSearchParams();
   const categoryFromUrl = searchParams.get('category');
-  // State ko directly URL wale param se initialize karein
+  
   const [selectedCategory, setSelectedCategory] = useState<number | null>(
       categoryFromUrl ? Number(categoryFromUrl) : null
   );
 
-  // 🔥 FILTER & PAGINATION STATES
   const [currentPage, setCurrentPage] = useState(1);
-  const [productsPerPage, setProductsPerPage] = useState(12); // Ab ye State hai (Dropdown se change hoga)
-  const [sortBy, setSortBy] = useState('featured'); // Default sorting state
+  const [productsPerPage, setProductsPerPage] = useState(12);
+  const [sortBy, setSortBy] = useState('featured'); 
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
- 
 
-useEffect(() => {
+  useEffect(() => {
     if (categoryFromUrl) {
       setSelectedCategory(Number(categoryFromUrl));
       setCurrentPage(1);
@@ -46,7 +44,6 @@ useEffect(() => {
     }
   }, [categoryFromUrl]);
 
-  // API Calls (Limit aur Page pass kar rahe hain)
   const { data: responseData, isLoading: isProductsLoading, error } = useGetAllProductsQuery({ 
       page: currentPage, 
       limit: productsPerPage,
@@ -54,31 +51,21 @@ useEffect(() => {
   });
   const { data: categories = [], isLoading: isCategoriesLoading } = useGetCategoriesQuery();
 
-  // 🔥 DATA EXTRACTION
   const rawProducts = responseData?.products || [];
   const paginationData = responseData?.pagination;
 
-  // Active products filter & Category filter
-// Active products filter & Category filter
   const filteredProducts = useMemo(() => {
     let active = rawProducts.filter((p: any) => p.status === 'active' || p.status === 'published');
-    
     if (selectedCategory) {
-        // 🔥 FIX: Dono ko Number mein convert karke check karo taaki type mismatch na ho
         active = active.filter((p: any) => Number(p.category_id) === Number(selectedCategory));
     }
-    
     return active;
   }, [rawProducts, selectedCategory]);
 
-
-  // 🔥 SMART SORTING LOGIC (With Price Calculation)
   const sortedProducts = useMemo(() => {
-    // 1. Pehle sabka exact price calculate kar lo
     const processedProducts = filteredProducts.map((product: any) => {
         const originalPrice = Number(product.price);
         const activeDiscountPercentage = Number(product.discount_percentage || product.discount || 0);
-        
         let currentPrice = originalPrice;
         let hasDiscount = false;
 
@@ -93,15 +80,81 @@ useEffect(() => {
         return { ...product, originalPrice, currentPrice, hasDiscount, activeDiscountPercentage };
     });
 
-    // 2. Ab user ki choice ke hisaab se sort karo
     return [...processedProducts].sort((a, b) => {
         if (sortBy === 'price-low') return a.currentPrice - b.currentPrice;
         if (sortBy === 'price-high') return b.currentPrice - a.currentPrice;
         if (sortBy === 'rating') return (b.rating || 0) - (a.rating || 0);
-        return 0; // 'featured' (Default API order)
+        return 0; 
     });
   }, [filteredProducts, sortBy]);
 
+  // 🔥 THE FLYING CART ANIMATION LOGIC 🔥
+  const handleAddToCartAnimation = (e: React.MouseEvent<HTMLButtonElement>, product: any) => {
+    // 1. Dispatch action to Redux
+    const productImage = product.img?.split(',')[0] || '';
+    dispatch(addToCart({
+      ...product,
+      id: product.id!, 
+      price: product.currentPrice,
+      img: productImage 
+    }));
+
+    // 2. Find target (Cart Icon in Header) - Header mein jahan '/cart' link hai usko target banayenge
+    const cartIcon = document.querySelector('a[href="/cart"]');
+    if (!cartIcon) return; // Agar cart header screen par nahi hai, toh animation skip
+
+    const cartRect = cartIcon.getBoundingClientRect();
+
+    // 3. Find source (Product Image)
+    const button = e.currentTarget;
+    const card = button.closest('.group'); 
+    const imgElement = card?.querySelector('img');
+
+    if (imgElement) {
+      const imgRect = imgElement.getBoundingClientRect();
+
+      // 4. Create a clone image to fly
+      const flyingImg = document.createElement('img');
+      flyingImg.src = productImage;
+      flyingImg.style.position = 'fixed';
+      flyingImg.style.left = `${imgRect.left}px`;
+      flyingImg.style.top = `${imgRect.top}px`;
+      flyingImg.style.width = `${imgRect.width}px`;
+      flyingImg.style.height = `${imgRect.height}px`;
+      flyingImg.style.objectFit = 'cover';
+      flyingImg.style.borderRadius = '12px';
+      flyingImg.style.zIndex = '99999';
+      flyingImg.style.pointerEvents = 'none'; 
+      flyingImg.style.boxShadow = '0 15px 30px rgba(0,0,0,0.3)';
+
+      document.body.appendChild(flyingImg);
+
+      // 5. Animate from Card to Cart
+      const animation = flyingImg.animate([
+        { 
+          transform: 'scale(1)', 
+          opacity: 1, 
+          left: `${imgRect.left}px`, 
+          top: `${imgRect.top}px` 
+        },
+        { 
+          transform: 'scale(0.1)', // Chota hota jayega
+          opacity: 0.5, 
+          // Center of the cart icon
+          left: `${cartRect.left + (cartRect.width / 4)}px`, 
+          top: `${cartRect.top + (cartRect.height / 4)}px` 
+        }
+      ], {
+        duration: 800, // 0.8 seconds ka smooth time
+        easing: 'cubic-bezier(0.25, 1, 0.5, 1)' 
+      });
+
+      // 6. Delete clone after animation finishes
+      animation.onfinish = () => {
+        flyingImg.remove();
+      };
+    }
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 font-sans flex flex-col lg:flex-row gap-8">
@@ -189,7 +242,7 @@ useEffect(() => {
       {/* RIGHT MAIN CONTENT */}
       <div className="w-full lg:w-3/4 flex flex-col">
         
-        {/* 🔥 TOP ACTION BAR (SORTING & LIMIT FILTERS) 🔥 */}
+        {/* TOP ACTION BAR */}
         <div className="hidden lg:flex justify-between items-center bg-white p-4 rounded-xl border border-gray-100 mb-6 shadow-sm">
           <p className="text-gray-500 font-medium text-sm">
              We found <strong className="text-green-500">{sortedProducts.length}</strong> items on this page!
@@ -201,7 +254,6 @@ useEffect(() => {
               <button onClick={() => setIsGridView(false)} className={`p-1.5 rounded-md transition-colors ${!isGridView ? 'bg-white shadow-sm text-green-500' : 'text-gray-500'}`}><ListIcon size={18} /></button>
             </div>
             
-            {/* Show Limit Dropdown */}
             <div className="relative flex items-center gap-2 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 bg-white">
               <Grid size={14} className="text-gray-400"/>
               <span className="font-medium text-gray-500">Show:</span>
@@ -209,7 +261,7 @@ useEffect(() => {
                 value={productsPerPage} 
                 onChange={(e) => {
                    setProductsPerPage(Number(e.target.value));
-                   setCurrentPage(1); // Reset page on limit change
+                   setCurrentPage(1); 
                 }}
                 className="bg-transparent outline-none cursor-pointer appearance-none pr-4 font-bold text-gray-800"
               >
@@ -221,7 +273,6 @@ useEffect(() => {
               <ChevronDown size={14} className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400"/>
             </div>
 
-            {/* Sort Dropdown */}
             <div className="relative flex items-center gap-2 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 bg-white">
               <ListIcon size={14} className="text-gray-400"/>
               <span className="font-medium text-gray-500">Sort by:</span>
@@ -255,7 +306,6 @@ useEffect(() => {
         ) : (
           <>
             <div className={isGridView ? "grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5" : "flex flex-col gap-5"}>
-              {/* 🔥 Mapped over SORTED array instead of filtered */}
               {sortedProducts.map((product:any) => (
                   <div key={product.id} className={`group relative bg-white border border-gray-200 rounded-2xl hover:border-green-300 hover:shadow-lg transition-all duration-300 overflow-hidden ${isGridView ? 'p-4 flex flex-col h-full' : 'p-4 flex flex-col sm:flex-row items-center gap-6'}`}>
                     
@@ -308,14 +358,10 @@ useEffect(() => {
                           ) : null}
                         </div>
 
+                        {/* 🔥 CHANGED THIS BUTTON 🔥 */}
                         <button 
-                          className="bg-green-50 hover:bg-green-500 text-green-600 hover:text-white px-4 py-2 rounded-md flex items-center gap-2 font-bold text-xs transition-colors shadow-sm mt-2"
-                          onClick={() => dispatch(addToCart({
-                            ...product,
-                            id: product.id!, 
-                            price: product.currentPrice,
-                            img: product.img?.split(',')[0] || '' 
-                          }))}
+                          className="bg-green-50 hover:bg-green-500 text-green-600 hover:text-white px-4 py-2 rounded-md flex items-center gap-2 font-bold text-xs transition-colors shadow-sm mt-2 z-10"
+                          onClick={(e) => handleAddToCartAnimation(e, product)}
                         >
                           <ShoppingCart size={14} /> Add
                         </button>
@@ -325,7 +371,7 @@ useEffect(() => {
               ))}
             </div>
 
-            {/* 🔥 PAGINATION CONTROLS */}
+            {/* PAGINATION CONTROLS */}
             {paginationData && paginationData.totalPages > 1 && (
               <div className="flex justify-between items-center mt-10 bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
                 <span className="text-sm text-gray-500 font-medium">

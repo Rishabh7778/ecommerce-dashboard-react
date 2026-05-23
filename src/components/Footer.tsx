@@ -1,6 +1,8 @@
 // Lucide se brand icons HATA dein, sirf normal UI icons rakhein:
 import { MapPin, Headphones, Mail, Clock, PhoneCall } from 'lucide-react';
 
+import logo from '../assets/images/logo.png';
+
 // react-icons se naye brand icons IMPORT karein:
 import { FaFacebook, FaTwitter, FaInstagram, FaYoutube } from 'react-icons/fa';
 
@@ -37,7 +39,8 @@ const Footer = () => {
             {/* Logo Placeholder */}
             <div className="flex items-center gap-2 mb-6 cursor-pointer">
               <div className="text-4xl text-green-500 font-black tracking-tight flex items-center">
-                <span className="text-yellow-400 mr-1 text-3xl">🥚</span>Nest
+                <img src={logo} alt="Freshiq Logo" className="w-10 h-10 lg:w-12 lg:h-12 mr-2" />Freshiq
+                
               </div>
             </div>
             

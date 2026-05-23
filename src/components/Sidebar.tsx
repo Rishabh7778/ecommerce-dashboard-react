@@ -1,7 +1,8 @@
 import { NavLink } from 'react-router-dom';
 import { 
   LayoutDashboard, ShoppingCart, Users, Ticket, 
-  Grid, CreditCard, Star, LogOut, Settings, PlusSquare 
+  Grid, CreditCard, Star, LogOut, Settings, PlusSquare, 
+  MessageSquare
 } from 'lucide-react';
 
 const Sidebar = () => {
@@ -17,6 +18,7 @@ const Sidebar = () => {
     { name: 'Deals', icon: Grid, path: '/admin/Deals' },
     { name: 'Transaction', icon: CreditCard, path: '/admin/transactions' },
     { name: 'Bulk Upload', icon: Star, path: '/admin/bulk-upload' },
+    { name: 'Contact', icon: MessageSquare, path: '/admin/contact' },
   ];
 
   return (

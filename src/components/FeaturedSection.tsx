@@ -1,29 +1,44 @@
 import { useRef, useEffect, useState } from 'react';
 import { ArrowLeft, ArrowRight, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import burger from '../assets/images/Burger.png';
-import kiwi from '../assets/images/kiwi.png';
-import peach from '../assets/images/peach.png';
-import Matcha from '../assets/images/Matcha-tea.jpg';
-import icecream from '../assets/images/icecream-banner.webp';
+import rice from '../assets/images/rice-bowl.png';
+import drink from '../assets/images/soft-drink.png';
+import jar from '../assets/images/honey.png';
+import chocolate from '../assets/images/chocolate-bar.png';
+import clean from '../assets/images/cleaning.png';
+import icecream from '../assets/images/ice-cream.png';
+import health from '../assets/images/healthcare.png';
+import home from '../assets/images/hand.png';
+import kitchen from '../assets/images/kitchen.png';
+import masala from '../assets/images/masala.png';
+import cosmetics from '../assets/images/cosmetics.png';
+import snack from '../assets/images/snack.png';
+import  meat from '../assets/images/meat.png';
+import coffee from '../assets/images/coffee-cup.png';
+import child from '../assets/images/child.png';
+import bread from '../assets/images/bread.png';
+import chips from '../assets/images/chips-bg.webp';
+import stationary from '../assets/images/stationary.png';
+import breakfast from '../assets/images/breakfast.png';
+import container from '../assets/images/container.webp';
 import icecream1 from '../assets/images/icecream.webp';
-import fruits from '../assets/images/fruits-banner.webp';
+import mustard from '../assets/images/mustard-oil.webp';
 import grocery from '../assets/images/grocery.png';
 
 import { useGetCategoriesQuery } from '../services/productApi';
 
 const bgColors = ['bg-[#f2fce4]', 'bg-[#fffceb]', 'bg-[#ecffec]', 'bg-[#feefea]', 'bg-[#fff3eb]', 'bg-[#fff3ff]'];
-const fallbackImages = [burger, kiwi, peach];
+const fallbackImages = [rice, child, bread, drink, breakfast, jar, chocolate, clean, icecream, health, home, kitchen, masala, cosmetics, snack, meat,stationary, coffee];
 
 const banners = [
-  { id: 1, title: "Everyday Fresh & Clean with Our Products", bg: "bg-[#f0e8d5]", img: Matcha },
-  { id: 2, title: "Make your Breakfast Healthy and Easy", bg: "bg-[#f3e8e8]", img: icecream },
+  { id: 1, title: "Everyday Fresh & Clean with Our Products", bg: "bg-[#f0e8d5]", img: chips },
+  { id: 2, title: "Make your Breakfast Healthy and Easy", bg: "bg-[#f3e8e8]", img: container },
   { id: 3, title: "The best Organic Products Online", bg: "bg-[#e7eaf3]", img: icecream1 },
-  { id: 4, title: "Farm Fresh Fruits Delivered Daily", bg: "bg-[#e8f3e9]", img: fruits },
+  { id: 4, title: "Farm Fresh Fruits Delivered Daily", bg: "bg-[#e8f3e9]", img: mustard },
   { id: 5, title: "Premium Quality Daily Dairy Needs", bg: "bg-[#f3f0e8]", img: grocery },
-  { id: 7, title: "Refreshing Beverages & Cold Drinks", bg: "bg-[#e8f0f3]", img: fruits },
+  { id: 7, title: "Refreshing Beverages & Cold Drinks", bg: "bg-[#e8f0f3]", img: mustard },
   { id: 8, title: "Delicious Snacks & Munchies", bg: "bg-[#f0f3e8]", img: grocery },
-  { id: 10, title: "Baby Care & Healthy Essentials", bg: "bg-[#f3e8e8]", img: fruits },
+  { id: 10, title: "Baby Care & Healthy Essentials", bg: "bg-[#f3e8e8]", img: mustard },
 ];
 
 // 🔥 Seamless Loop ban banane ke liye array ko 3 baar duplicate kar diya

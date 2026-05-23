@@ -1,25 +1,34 @@
-import { useState, useEffect } from 'react';
-import { ShoppingCart, User, Grid, ChevronDown, Flame, Headphones } from 'lucide-react';
-import { NavLink, Link } from 'react-router-dom'; // 🔥 Link import kiya dropdown navigation ke liye
+import { useState, useEffect, useRef } from 'react';
+import { ShoppingCart, User, Grid, ChevronDown, Flame, Headphones, Menu, X, Heart } from 'lucide-react';
+import { NavLink, Link } from 'react-router-dom';
+import logo from '../assets/images/logo.png';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../store/store';
+import cartTone from '../assets/cart-tone.mp3';
 
-// 🔥 Apna sahi API path yahan daalein (jaise categoryApi ya discountApi)
+// API import
 import { useGetCategoriesQuery } from '../services/discountApi'; 
 
 const Header = () => {
-
+  // 1. Pehle Redux se data nikaliye
   const cartItems = useSelector((state: RootState) => state.cart.cartItems);
+  
+  // 2. Phir total calculate kijiye
   const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
+  
+  // 3. USKE BAAD useRef mein use kijiye
+  const prevTotalItems = useRef(totalItems); 
+  const wishlistItems = useSelector((state: RootState) => state.wishlist?.wishlistItems || []);
 
-  // 🔥 Fetch dynamic categories from Backend
   const { data: categories, isLoading: isCategoriesLoading } = useGetCategoriesQuery();
-  // Agar API response mein data object ke andar hai toh aise set karein: data?.categories || []
+  // ... baaki poora code same rahega
 
-  // Dropdown state handle karne ke liye
+  // States
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // 🔥 Mobile Menu State
+  const [isCartAnimating, setIsCartAnimating] = useState(false); // 🔥 Cart Animation State
 
-  // 🔥 ANIMATED SLIDER LOGIC START
+  // 🔥 ANIMATED SLIDER LOGIC
   const announcements = [
     <p key="1"><span className="text-[#3BB77E] font-medium">100% Secure delivery</span> without contacting the courier.</p>,
     <p key="2"><span className="text-[#3BB77E] font-medium">Free Shipping</span> on all orders above ₹500!</p>,
@@ -47,12 +56,43 @@ const Header = () => {
       return () => clearTimeout(timeout);
     }
   }, [currentIndex, announcements.length]);
-  // 🔥 ANIMATED SLIDER LOGIC END
+
+  // 🔥 CART ANIMATION & SOUND LOGIC
+ useEffect(() => {
+    // Condition: Jab naya count pichle count se zyada ho (Yaani user ne kuch add kiya hai)
+    if (totalItems > prevTotalItems.current) {
+      
+      // 1. Sound Play Karo
+      try {
+        // Dhyan dein: File ka naam aur path ekdum match hona chahiye
+        const audio = new Audio(cartTone); 
+        audio.volume = 0.5; // Awaaz thodi soft rakhne ke liye
+        
+        // Promise catch lagana zaroori hai browser policies ke liye
+        audio.play().catch(e => console.warn("Browser blocked audio:", e.message));
+      } catch (error) {
+        console.error("Audio error", error);
+      }
+      
+      // 2. Animation Trigger Karo
+      setIsCartAnimating(true);
+      
+      // Animation ka time thoda bada kar 400ms kiya hai taaki proper dikhe
+      const timer = setTimeout(() => {
+        setIsCartAnimating(false);
+      }, 400); 
+
+      return () => clearTimeout(timer);
+    }
+
+    // Har baar effect chalne ke baad, naye count ko save kar lo
+    prevTotalItems.current = totalItems;
+  }, [totalItems]);
 
   return (
-    <header className="w-full bg-white font-sans">
+    <header className="w-full bg-white font-sans relative z-50">
       
-      {/* 1. Top Announcement Bar */}
+      {/* 1. Top Announcement Bar (Hidden on Mobile for space) */}
       <div className="hidden lg:flex justify-center items-center h-10 px-8 text-[13px] text-gray-500 border-b border-gray-100 bg-[#f8f9fa] overflow-hidden">
         <div 
           className={`flex flex-col text-center ${isTransitioning ? 'transition-transform duration-700 ease-in-out' : ''}`}
@@ -66,20 +106,25 @@ const Header = () => {
         </div>
       </div>
 
-      {/* 2. Middle Main Header */}
-      <div className="flex flex-wrap lg:flex-nowrap justify-evenly items-center px-8 py-6 gap-6 border-b border-gray-100">
+      {/* 2. Middle Main Header (Responsive) */}
+      <div className="flex justify-evenly items-center px-4 lg:px-8 py-4 lg:py-6 gap-6 border-b border-gray-100">
         
+        {/* 🔥 Mobile Hamburger Button */}
+        <button 
+          className="lg:hidden text-gray-700 hover:text-[#3BB77E]"
+          onClick={() => setIsMobileMenuOpen(true)}
+        >
+          <Menu size={28} />
+        </button>
+
         {/* Logo */}
-        <div className="flex items-center gap-2 min-w-fit cursor-pointer">
-          <div className="text-4xl text-green-500 font-black tracking-tight flex items-center">
-            <span className="text-yellow-400 mr-1 text-3xl">🥚</span>Nest
-          </div>
-          <div className="text-[10px] text-gray-500 font-semibold tracking-widest uppercase mt-3">
-            Mart & Grocery
+        <div className="flex items-center gap-2 min-w-fit cursor-pointer mx-auto lg:mx-0">
+          <div className="text-3xl lg:text-4xl text-green-500 font-black tracking-tight flex items-center">
+            <img src={logo} alt="Nest Logo" className="w-20 h-20 lg:w-12 lg:h-12 mr-2" /> Freshiq
           </div>
         </div>
 
-        {/* Search Bar */}
+        {/* Search Bar (Hidden on Mobile) */}
         <div className="flex-1 max-w-2xl hidden md:flex border-2 border-green-500 rounded-md overflow-hidden">
           <input 
             type="text" 
@@ -92,98 +137,134 @@ const Header = () => {
         </div>
 
         {/* Right Actions */}
-        <div className="flex items-center gap-6">
-          <div className="flex items-center gap-5">
-            <NavLink to="/cart" className="relative flex items-center gap-2 text-gray-700 hover:text-green-500 group">
-              <div className="relative">
-                <ShoppingCart size={24} className="text-gray-600 group-hover:text-green-500 transition-colors" />
-                <span className="absolute -top-1.5 -right-1.5 bg-green-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
-                  {totalItems}
-                </span>
-              </div>
-              <span className="text-sm font-medium hidden lg:block">Cart</span>
-            </NavLink>
+        <div className="flex items-center gap-4 lg:gap-6">
+          
+          <NavLink to="/account" className="hidden sm:flex items-center gap-2 text-gray-700 hover:text-green-500 group">
+            <User size={24} className="text-gray-600 group-hover:text-green-500 transition-colors" />
+            <span className="text-sm font-medium hidden lg:block">Account</span>
+          </NavLink>
+          <NavLink to="/wishlist" className="relative flex items-center gap-2 text-gray-700 hover:text-red-500 group">
+  <div className="relative">
+    <Heart 
+      size={26} 
+      className="text-gray-600 group-hover:text-red-500 transition-colors duration-300" 
+    />
+    {wishlistItems.length > 0 && (
+      <span className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] min-w-[18px] h-[18px] px-1 rounded-full flex items-center justify-center font-bold border-2 border-white">
+        {wishlistItems.length}
+      </span>
+    )}
+  </div>
+  <span className="text-sm font-medium hidden lg:block">Wishlist</span>
+</NavLink>
 
-            <NavLink to="/account" className="flex items-center gap-2 text-gray-700 hover:text-green-500 group">
-              <User size={24} className="text-gray-600 group-hover:text-green-500 transition-colors" />
-              <span className="text-sm font-medium hidden lg:block">Account</span>
-            </NavLink>
-          </div>
+          {/* 🔥 CART ICON WITH ANIMATION */}
+          <NavLink to="/cart" className="relative flex items-center gap-2 text-gray-700 hover:text-green-500 group">
+            <div className="relative">
+              <ShoppingCart 
+                size={26} 
+                className={`text-gray-600 group-hover:text-green-500 transition-all duration-300 ${isCartAnimating ? 'scale-125 text-[#3BB77E]' : 'scale-100'}`} 
+              />
+              <span className={`absolute -top-1.5 -right-1.5 bg-green-500 text-white text-[10px] min-w-[18px] h-[18px] px-1 rounded-full flex items-center justify-center font-bold border-2 border-white transition-transform duration-300 ${isCartAnimating ? 'scale-150 bg-red-500' : 'scale-100'}`}>
+                {totalItems}
+              </span>
+            </div>
+            <span className="text-sm font-medium hidden lg:block">Cart</span>
+          </NavLink>
+
         </div>
       </div>
 
-      {/* 3. Bottom Navbar */}
+      {/* 3. Bottom Navbar (Desktop Only) */}
       <div className="hidden lg:flex justify-evenly items-center px-8 py-3 border-b border-gray-100">
-        
         <div className="flex items-center gap-8">
-          
-          {/* 🔥 Dynamic Category Dropdown Box */}
-          {/* 🔥 MEGA MENU CATEGORY DROPDOWN */}
+          {/* Desktop Category Dropdown */}
           <div 
-            className="relative group" // hover manage karne ke liye 'group' best hai
+            className="relative group"
             onMouseEnter={() => setIsCategoryOpen(true)}
             onMouseLeave={() => setIsCategoryOpen(false)}
           >
             <button className="bg-[#3BB77E] hover:bg-[#2e9c68] text-white px-5 py-3 rounded-md flex items-center gap-2 font-bold text-sm transition-colors shadow-sm">
-              <Grid size={18} />
-              Browse All Categories
-              <ChevronDown size={16} className={`ml-2 transition-transform duration-300 ${isCategoryOpen ? 'rotate-180' : ''}`} />
+              <Grid size={18} /> Browse All Categories <ChevronDown size={16} className={`ml-2 transition-transform duration-300 ${isCategoryOpen ? 'rotate-180' : ''}`} />
             </button>
-
-            {/* Dropdown Container */}
             {isCategoryOpen && (
-              // pt-2 diya hai taaki button aur menu ke beech gap cover ho jaye aur mouse leave na ho
               <div className="absolute top-full left-0 pt-2 w-[500px] z-50"> 
-                <div className="bg-white border border-gray-100 rounded-xl shadow-[0_15px_30px_rgba(0,0,0,0.08)] p-6">
-                  
+                <div className="bg-white border border-gray-100 rounded-xl shadow-xl p-6">
                   {isCategoriesLoading ? (
-                    <div className="text-center py-5 text-gray-400 font-medium animate-pulse">Loading Categories...</div>
-                  ) : categories && categories.length > 0 ? (
-                    // 🔥 2-Column Grid Format (Mega Menu Look)
+                    <div className="text-center py-5 text-gray-400">Loading...</div>
+                  ) : (
                     <div className="grid grid-cols-2 gap-x-6 gap-y-2">
-                      {categories.map((cat: any) => (
-                        <Link
-                          key={cat.id}
-                          to={`/shop?category=${cat.id}`} 
-                          onClick={() => setIsCategoryOpen(false)}
-                          className="block px-4 py-2.5 text-[14px] font-medium text-gray-600 rounded-md hover:bg-[#def9ec] hover:text-[#3BB77E] transition-all duration-200"
-                        >
+                      {categories?.map((cat: any) => (
+                        <Link key={cat.id} to={`/shop?category=${cat.id}`} onClick={() => setIsCategoryOpen(false)} className="block px-4 py-2 text-sm text-gray-600 rounded-md hover:bg-[#def9ec] hover:text-[#3BB77E]">
                           {cat.name}
                         </Link>
                       ))}
                     </div>
-                  ) : (
-                    <div className="text-center py-5 text-gray-400 font-medium">No Categories Found</div>
                   )}
-
                 </div>
               </div>
             )}
           </div>
-          {/* 🔥 MEGA MENU END */}
 
           <nav className="flex items-center gap-6 font-semibold text-sm text-gray-700">
-            <a href="#deals-of-the-day" className="flex items-center gap-1 text-green-500 hover:text-green-600">
-              <Flame size={18} className="text-green-500" /> Hot Deals
-            </a>
-            <NavLink to="/" className="flex items-center gap-1 hover:text-green-500 transition-colors">Home </NavLink>
-            <NavLink to="/about" className="hover:text-green-500 transition-colors">About</NavLink>
-            <NavLink to="/shop" className="flex items-center gap-1 hover:text-green-500 transition-colors">Shop</NavLink>
-            <NavLink to="/blog" className="flex items-center gap-1 hover:text-green-500 transition-colors">Blog <ChevronDown size={14} className="text-gray-400" /></NavLink>
-            <NavLink to="/contact" className="hover:text-green-500 transition-colors">Contact</NavLink>
+            <a href="#deals-of-the-day" className="flex items-center gap-1 text-green-500"><Flame size={18} /> Hot Deals</a>
+            <NavLink to="/" className="hover:text-green-500">Home</NavLink>
+            <NavLink to="/shop" className="hover:text-green-500">Shop</NavLink>
+            <NavLink to="/about" className="hover:text-green-500">About</NavLink>
+            <NavLink to="/contact" className="hover:text-green-500">Contact</NavLink>
           </nav>
         </div>
-
-        {/* Support Center */}
         <div className="flex items-center gap-3">
           <Headphones size={32} className="text-gray-400" />
           <div className="flex flex-col">
-            <span className="text-green-500 text-xl font-bold leading-none">1900888123</span>
+            <span className="text-green-500 text-xl font-bold leading-none">8920464643</span>
             <span className="text-[11px] text-gray-500 font-medium">24/7 Support Center</span>
           </div>
         </div>
-
       </div>
+
+      {/* 🔥 4. MOBILE SIDEBAR MENU */}
+      <div className={`fixed inset-0 bg-black/50 z-50 transition-opacity duration-300 lg:hidden ${isMobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
+        <div className={`fixed inset-y-0 left-0 w-[280px] bg-white shadow-2xl transform transition-transform duration-300 flex flex-col ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+          
+          <div className="flex items-center justify-between p-4 border-b border-gray-100">
+             <div className="text-2xl text-green-500 font-black tracking-tight"><span className="text-yellow-400">🥚</span>Nest</div>
+             <button onClick={() => setIsMobileMenuOpen(false)} className="text-gray-500 hover:text-red-500"><X size={24} /></button>
+          </div>
+
+          <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-6">
+            {/* Mobile Search */}
+            <div className="flex border border-gray-200 rounded-md overflow-hidden">
+              <input type="text" placeholder="Search..." className="w-full px-3 py-2 text-sm focus:outline-none" />
+              <button className="bg-green-500 text-white px-4 text-sm font-bold">Go</button>
+            </div>
+
+            {/* Mobile Nav Links */}
+            <nav className="flex flex-col gap-4 font-bold text-gray-700">
+              <NavLink to="/" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-green-500">Home</NavLink>
+              <NavLink to="/shop" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-green-500">Shop</NavLink>
+              <NavLink to="/about" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-green-500">About Us</NavLink>
+              <NavLink to="/contact" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-green-500">Contact</NavLink>
+            </nav>
+
+            <hr className="border-gray-100" />
+
+            {/* Mobile Categories */}
+            <div>
+              <h3 className="font-bold text-gray-800 mb-3 text-sm">Categories</h3>
+              <div className="flex flex-col gap-3 text-sm text-gray-600">
+                 {isCategoriesLoading ? <span>Loading...</span> : categories?.map((cat: any) => (
+                    <Link key={cat.id} to={`/shop?category=${cat.id}`} onClick={() => setIsMobileMenuOpen(false)} className="hover:text-green-500">
+                      {cat.name}
+                    </Link>
+                 ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* MOBILE MENU END */}
+
     </header>
   );
 };

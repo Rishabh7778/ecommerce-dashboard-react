@@ -66,8 +66,11 @@ const DealsOfTheDay = () => {
   const [isDragging, setIsDragging] = useState(false);
 
   // Sync API data with local state
-  useEffect(() => {
-    if (deals.length > 0) setDealsList(deals);
+useEffect(() => {
+    if (deals.length > 0) {
+      const activeDealsOnly = deals.filter((deal) => deal.targetDate > Date.now());
+      setDealsList(activeDealsOnly);
+    }
   }, [deals]);
 
   // Responsive Items Per View
