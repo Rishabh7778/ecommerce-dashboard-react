@@ -1,51 +1,29 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { apiSlice } from '../store/apiSlice'; 
 
-// Types define kar lete hain
-export interface Address {
-    id?: number;
-    fullName: string;
-    phone: string;
-    streetAddress: string;
-    city: string;
-    state: string;
-    pincode: string;
-    isDefault?: boolean;
-}
-
-export const addressApi = createApi({
-    reducerPath: 'addressApi',
-    baseQuery: fetchBaseQuery({ 
-        baseUrl: import.meta.env.VITE_API_BASE_URL + '/api',
-        prepareHeaders: (headers) => {
-            const token = localStorage.getItem('token');
-            if (token) {
-                headers.set('authorization', `Bearer ${token}`);
-            }
-            return headers;
-        },
-    }),
-    tagTypes: ['Address'], // Isse auto-refresh hoga naya address add hone par
-
+export const addressApi = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
-        // 1. Fetch Addresses
-        getMyAddresses: builder.query<{ addresses: Address[], success: boolean }, void>({
-            query: () => '/address/my-addresses',
+        // 1. Get Addresses
+        getMyAddresses: builder.query<any, void>({
+            // Routing Process: /api pehle se hai, ab aage exactly '/address/my-addresses' jayega
+            query: () => '/address/my-addresses', 
             providesTags: ['Address'],
         }),
-        
+
         // 2. Add Address
-        addAddress: builder.mutation<any, Address>({
-            query: (addressData) => ({
-                url: '/address/add',
+        addAddress: builder.mutation<any, any>({
+            query: (data) => ({
+                // Routing Process: Backend ke hisaab se singular '/address/add'
+                url: '/address/add', 
                 method: 'POST',
-                body: addressData,
+                body: data,
             }),
-            invalidatesTags: ['Address'], // Form submit hote hi purana data refresh karega
+            invalidatesTags: ['Address'], // Action Role: Address add hote hi list auto-refresh hogi
         }),
 
-        // 3. Update Address (Future ke liye)
-        updateAddress: builder.mutation<any, { id: number, data: Address }>({
+        // 3. Update Address (Backend mein /update/:id hai, isliye isko bhi ready rakha hai)
+        updateAddress: builder.mutation<any, { id: string | number; data: any }>({
             query: ({ id, data }) => ({
+                // Routing Process: Dynamic ID ke sath update route
                 url: `/address/update/${id}`,
                 method: 'PUT',
                 body: data,
@@ -57,6 +35,6 @@ export const addressApi = createApi({
 
 export const { 
     useGetMyAddressesQuery, 
-    useAddAddressMutation, 
-    useUpdateAddressMutation 
+    useAddAddressMutation,
+    useUpdateAddressMutation
 } = addressApi;

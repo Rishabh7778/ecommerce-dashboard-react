@@ -1,4 +1,4 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { apiSlice } from '../store/apiSlice'; // Apne main manager ko bulaiye
 
 // --- TYPES DEFINITION ---
 export interface User {
@@ -15,36 +15,23 @@ export interface AuthResponse {
     success: boolean;
 }
 
-export const authApi = createApi({
-    reducerPath: 'authApi',
-    baseQuery: fetchBaseQuery({
-        baseUrl: import.meta.env.VITE_API_BASE_URL + '/api',
-       
-        prepareHeaders: (headers) => {
-            
-            const token = localStorage.getItem('token');
-
-           
-            if (token) {
-                headers.set('authorization', `Bearer ${token}`);
-            }
-            return headers;
-        },
-    }),
-
+// 3. Main API aur Endpoints setup (Ab ye worker ban gaya hai)
+export const authApi = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
-        // 1. REGISTER MUTATION
+        // REGISTER MUTATION
         register: builder.mutation<AuthResponse, any>({
             query: (userData) => ({
+                // Routing: Base '/api' hai, toh aage '/auth/register'
                 url: '/auth/register',
                 method: 'POST',
                 body: userData,
             }),
         }),
 
-        // 2. LOGIN MUTATION
+        // LOGIN MUTATION
         login: builder.mutation<AuthResponse, any>({
             query: (credentials) => ({
+                // Routing: Base '/api' hai, toh aage '/auth/login'
                 url: '/auth/login',
                 method: 'POST',
                 body: credentials,
@@ -53,7 +40,7 @@ export const authApi = createApi({
     }),
 });
 
-// Sahi hooks export karein
+// Hooks export karein
 export const {
     useRegisterMutation,
     useLoginMutation,

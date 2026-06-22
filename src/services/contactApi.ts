@@ -1,6 +1,6 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { apiSlice } from '../store/apiSlice'; // Apna main apiSlice import karo
 
-// ✅ Interface ka naam correct kiya hai (Category se ContactMessage)
+// ✅ Interface wahi same rahenge
 export interface ContactMessage {
     id: number;
     name: string;
@@ -10,7 +10,6 @@ export interface ContactMessage {
     created_at?: string;
 }
 
-// Response structure jo backend se aa raha hai
 interface GetAllMessagesResponse {
     data: ContactMessage[];
     pagination: {
@@ -20,24 +19,12 @@ interface GetAllMessagesResponse {
     };
 }
 
-export const contactApi = createApi({
-    reducerPath: 'contactApi',
-    baseQuery: fetchBaseQuery({
-        baseUrl: (import.meta.env.VITE_API_BASE_URL || '') + '/api/contact',
-        prepareHeaders: (headers) => {
-            const token = localStorage.getItem('token');
-            if (token) {
-                headers.set('authorization', `Bearer ${token}`);
-            }
-            return headers;
-        },
-    }),
-    tagTypes: ['ContactMessage'],   
+export const contactApi = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         // Mutation for posting message
         postMessage: builder.mutation<{ message: string }, Omit<ContactMessage, 'id'>>({
             query: (data) => ({
-                url: '/',
+                url: '/contact', // '/api' base hai, toh aage '/contact'
                 method: 'POST',
                 body: data,
             }),
@@ -45,7 +32,7 @@ export const contactApi = createApi({
         }),
         
         getAllMessages: builder.query<GetAllMessagesResponse, { page?: number; limit?: number }>({ 
-            query: ({ page = 1, limit = 10 }) => `/admin/messages?page=${page}&limit=${limit}`, 
+            query: ({ page = 1, limit = 10 }) => `/contact/admin/messages?page=${page}&limit=${limit}`, 
             providesTags: ['ContactMessage'],
         }),
     }),

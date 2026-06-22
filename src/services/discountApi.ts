@@ -1,4 +1,4 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { apiSlice } from '../store/apiSlice'; 
 
 // Response types define kar lete hain
 export interface Category {
@@ -9,53 +9,40 @@ export interface Category {
     discount_expiry_date: string;
 }
 
-// 🔥 Iska naam 'discountApi' kar diya hai taaki aapke store.ts se match kare
-export const discountApi = createApi({
-    reducerPath: 'discountApi',
-    baseQuery: fetchBaseQuery({
-        baseUrl: import.meta.env.VITE_API_BASE_URL + '/api/discounts',
-        prepareHeaders: (headers) => {
-            const token = localStorage.getItem('token');
-            if (token) {
-                headers.set('authorization', `Bearer ${token}`);
-            }
-            return headers;
-        },
-    }),
-    tagTypes: ['Category', 'Product'], // Product bhi add kiya taaki price update ho
-
+// Specialist worker apne endpoints manager ko hand-over kar raha hai
+export const discountApi = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
-
+        
         applyCategoryDiscount: builder.mutation<any, any>({
             query: (data) => ({
-                // ✅ FIX 1: Yahan se '/categories' hata diya. Sirf '/apply-discount' aayega.
-                url: '/apply-discount',
+                // Routing process: '/api' base hai, toh aage '/discounts/apply-discount' aayega
+                url: '/discounts/apply-discount',
                 method: 'POST',
                 body: data,
             }),
-            invalidatesTags: ['Product', 'Category'],
+            invalidatesTags: ['Product', 'Category'], // Action role: cache refresh karna
         }),
 
-        // 🔥 Naye hook ka naam useGetCategoriesQuery rakha hai
         getCategories: builder.query<Category[], void>({
-            // ✅ FIX 2: Yahan se bhi '/categories' hata diya. Sirf '/getAll' aayega.
-            query: () => '/getAll',
+            // Routing process: '/discounts/getAll'
+            query: () => '/discounts/getAll',
             providesTags: ['Category'],
         }),
 
         removeCategoryDiscount: builder.mutation<any, number | string>({
             query: (id) => ({
-                url: `/remove-discount/${id}`,
+                // Routing process: Dynamic ID ke sath '/discounts/remove-discount/'
+                url: `/discounts/remove-discount/${id}`,
                 method: 'PUT',
             }),
-            invalidatesTags: ['Category', 'Product'], // Hatate hi frontend automatically refresh hoga
+            invalidatesTags: ['Category', 'Product'], // Action role: UI ko instantly update karna
         }),
     }),
 });
 
-// 🔥 Hooks ko sahi se export karein
+// Hooks export karein taaki frontend components in actions ko use kar sakein
 export const {
-    useGetCategoriesQuery, // Hook ka naam match kar diya
+    useGetCategoriesQuery,
     useApplyCategoryDiscountMutation,
     useRemoveCategoryDiscountMutation,
 } = discountApi;

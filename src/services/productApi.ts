@@ -1,6 +1,5 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { apiSlice } from '../store/apiSlice'; // Main API import karo
 
-// --- NEW CATEGORY INTERFACE ---
 export interface Category {
   id: number;
   name: string;
@@ -8,8 +7,6 @@ export interface Category {
   discount_start_date?: string;
   discount_expiry_date?: string;
 }
-
-// --- UPDATED PRODUCT INTERFACE (Matching SQL Schema) ---
 
 export interface Product {
   id?: number;
@@ -21,12 +18,12 @@ export interface Product {
   discounted_price?: number;
   oldPrice?: number;
   sku?: string;
-  stockCount: number; // (Pichla fix, agar aapne strict kiya tha)
+  stockCount: number; 
   weight?: string;
   mfgDate?: string;
   expiryDate?: string;
   rating?: number;
-  reviewsCount?: number; // 🔥 YE NAYI LINE ADD KARNI HAI
+  reviewsCount?: number; 
   badge?: string | null;
   badgeColor?: string | null;
   discount?: number;
@@ -36,31 +33,14 @@ export interface Product {
   category_name?: string;
 }
 
-export const productApi = createApi({
-  reducerPath: 'productApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_API_BASE_URL + '/api',
-    prepareHeaders: (headers) => {
-      const token = localStorage.getItem('token');
-      if (token) {
-        headers.set('authorization', `Bearer ${token}`);
-      }
-      return headers;
-    },
-  }),
-  tagTypes: ['Product', 'Order', 'Category'],
-
+export const productApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getAllProducts: builder.query<any, { page?: number, limit?: string | number, category?: number | null } | void>({
       query: (arg) => {
         if (arg) {
           const { page = 1, limit = 12, category } = arg;
           let url = `/products/getAll?page=${page}&limit=${limit}`;
-
-          // 🔥 Agar user ne category select ki hai, toh URL mein attach kar do
-          if (category) {
-            url += `&category=${category}`;
-          }
+          if (category) url += `&category=${category}`;
           return url;
         }
         return '/products/getAll';
@@ -77,7 +57,6 @@ export const productApi = createApi({
       invalidatesTags: ['Product'],
     }),
 
-    // baaki endpoints ke sath isko add karein...
     getProductById: builder.query<Product, string>({
       query: (id) => `/products/get/${id}`,
       providesTags: ['Product'],
@@ -92,20 +71,16 @@ export const productApi = createApi({
       invalidatesTags: ['Product'],
     }),
 
-    // --- CATEGORY ENDPOINTS ---
     getCategories: builder.query<Category[], void>({
       query: () => '/products/categories/getAll',
       providesTags: ['Category'],
     }),
 
-
-    // Endpoint add karein endpoints: (builder) => ({ ... }) ke andar
     getDashboardStats: builder.query<any, void>({
-      query: () => '/products/dashboard-stats', // Apna backend route check kar lena
-      providesTags: ['Product'], // Taaki product add/delete hone par ye auto-refresh ho
+      query: () => '/products/dashboard-stats', 
+      providesTags: ['Product'], 
     }),
 
-    // --- DISCOUNT ENDPOINT ---
     applyCategoryDiscount: builder.mutation<any, any>({
       query: (data) => ({
         url: '/products/categories/apply-discount',
@@ -115,7 +90,6 @@ export const productApi = createApi({
       invalidatesTags: ['Product', 'Category'],
     }),
 
-    // --- PAYMENT ENDPOINTS ---
     createOrder: builder.mutation<any, { amount: number; address_id: string | number }>({
       query: (data) => ({
         url: '/payments/create-order',
@@ -133,12 +107,11 @@ export const productApi = createApi({
       invalidatesTags: ['Order'],
     }),
 
-    // --- OTHER CRUD ---
     updateProduct: builder.mutation<any, { id: number | string; data: FormData | any }>({
       query: ({ id, data }) => ({
         url: `/products/update/${id}`,
         method: 'PUT',
-        body: data, // Yahan aayega apka FormData
+        body: data, 
       }),
       invalidatesTags: ['Product'],
     }),
@@ -162,12 +135,11 @@ export const productApi = createApi({
 
     getProductReviews: builder.query<any, string>({
       query: (id) => `/products/review/${id}`,
-      providesTags: ['Product'], // Taaki naya review aane pe auto-refresh ho
+      providesTags: ['Product'], 
     }),
   }),
 });
 
-// 🔥 Sabhi hooks export ho gaye sahi syntax ke saath
 export const {
   useGetAllProductsQuery,
   useAddProductMutation,

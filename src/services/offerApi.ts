@@ -1,37 +1,25 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { apiSlice } from '../store/apiSlice'; // Main API import karo
 
-export const offerApi = createApi({
-    reducerPath: 'offerApi',
-    baseQuery: fetchBaseQuery({ 
-            baseUrl: import.meta.env.VITE_API_BASE_URL + '/api/deals',
-            prepareHeaders: (headers) => {
-                const token = localStorage.getItem('token');
-                if (token) {
-                    headers.set('authorization', `Bearer ${token}`);
-                }
-                return headers;
-            },
-        }),
-    tagTypes: ['Deal'],
+export const offerApi = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         getDeals: builder.query<any, void>({
-            query: () => '/',
+            query: () => '/deals', // Base URL '/api' hai, toh aage '/deals' aayega
             providesTags: ['Deal'],
         }),
         getEligibleProducts: builder.query<any, void>({
-            query: () => '/eligible-products', // Database se products lene ke liye
+            query: () => '/deals/eligible-products', 
         }),
         addDealFromProduct: builder.mutation<any, { productId: number, targetDate: string }>({
             query: (data) => ({
-                url: '/add-from-product',
+                url: '/deals/add-from-product',
                 method: 'POST',
-                body: data, // Seedha JSON bhejna hai
+                body: data, 
             }),
             invalidatesTags: ['Deal'],
         }),
         deleteDeal: builder.mutation<any, number>({
             query: (id) => ({
-                url: `/${id}`,
+                url: `/deals/${id}`,
                 method: 'DELETE',
             }),
             invalidatesTags: ['Deal'],

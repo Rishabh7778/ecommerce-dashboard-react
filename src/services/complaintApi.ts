@@ -1,29 +1,16 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { apiSlice } from '../store/apiSlice'; // Apna main apiSlice import karo
 
-export const complaintApi = createApi({
-    reducerPath: 'complaintApi',
-    baseQuery: fetchBaseQuery({ 
-        baseUrl: import.meta.env.VITE_API_BASE_URL + '/api/complaints',
-        // credentials: 'include', // Isko hata sakte ho ab
-        prepareHeaders: (headers) => {
-            const token = localStorage.getItem('token');
-            if (token) {
-                headers.set('authorization', `Bearer ${token}`);
-            }
-            return headers;
-        },
-    }),
-    tagTypes: ['Complaint'],
-
+export const complaintApi = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         getAllComplaints: builder.query<any, void>({
-            query: () => '/all', 
+            // Base URL '/api' hai, toh aage '/complaints/all' lagana padega
+            query: () => '/complaints/all', 
             providesTags: ['Complaint'],
         }),
 
         addComplaint: builder.mutation<any, { subject: string, message: string }>({
             query: (data) => ({
-                url: '/add', // Ye sahi hai: /api/complaints/add
+                url: '/complaints/add', 
                 method: 'POST',
                 body: data,
             }),
@@ -32,7 +19,7 @@ export const complaintApi = createApi({
 
         resolveComplaint: builder.mutation<any, number>({
             query: (id) => ({
-                url: `/resolve/${id}`, 
+                url: `/complaints/resolve/${id}`, 
                 method: 'PUT',
             }),
             invalidatesTags: ['Complaint'],
@@ -40,4 +27,8 @@ export const complaintApi = createApi({
     }),
 });
 
-export const { useGetAllComplaintsQuery, useResolveComplaintMutation,useAddComplaintMutation } = complaintApi;
+export const { 
+    useGetAllComplaintsQuery, 
+    useResolveComplaintMutation,
+    useAddComplaintMutation 
+} = complaintApi;

@@ -4,16 +4,8 @@ import cartReducer from "../features/cartSlice";
 // 🔥 1. YAHAN WISHLIST REDUCER IMPORT KIYA HAI
 import wishlistReducer from "../features/wishlistSlice";
 
-import { productApi } from "../services/productApi";
-import { authApi } from "../services/authApi";
-import { addressApi } from "../services/addressApi";
-import { orderApi } from "../services/orderApi";
-import { complaintApi } from "../services/complaintApi";
-import { discountApi } from "../services/discountApi";
-import { categoryApi } from "../services/categoryApi";
-import { userApi } from "../services/userApi";
-import { offerApi } from "../services/offerApi";
-import {contactApi} from "../services/contactApi";
+// 🔥 2. SIRF EK MAIN API SLICE IMPORT KARNA HAI AB
+import { apiSlice } from "../store/apiSlice";
 
 // ==========================================
 // CART STORAGE LOGIC
@@ -38,7 +30,7 @@ const saveCartState = (state: any) => {
 };
 
 // ==========================================
-// 🔥 WISHLIST STORAGE LOGIC (Naya Add Kiya)
+// 🔥 WISHLIST STORAGE LOGIC 
 // ==========================================
 const loadWishlistState = () => {
   try {
@@ -65,34 +57,19 @@ const saveWishlistState = (state: any) => {
 const store = configureStore({
   reducer: {
     cart: cartReducer,
-    wishlist: wishlistReducer, // 🔥 Error yahin tha, ab fix ho gaya import ke sath
-    [productApi.reducerPath]: productApi.reducer,
-    [authApi.reducerPath]: authApi.reducer,
-    [addressApi.reducerPath]: addressApi.reducer,
-    [orderApi.reducerPath]: orderApi.reducer,
-    [complaintApi.reducerPath]: complaintApi.reducer, 
-    [discountApi.reducerPath]: discountApi.reducer,
-    [categoryApi.reducerPath]: categoryApi.reducer,
-    [userApi.reducerPath]: userApi.reducer,
-    [offerApi.reducerPath]: offerApi.reducer, 
-    [contactApi.reducerPath]: contactApi.reducer,
+    wishlist: wishlistReducer,
+    
+    // 🔥 3. SAARI ALAG-ALAG APIs KI JAGAH AB BAS YE EK LINE AAYEGI
+    [apiSlice.reducerPath]: apiSlice.reducer,
   },
   preloadedState: {
     cart: loadCartState(), 
-    wishlist: loadWishlistState(), // 🔥 App start hone par Wishlist bhi localStorage se aayegi
+    wishlist: loadWishlistState(), 
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
-      productApi.middleware, 
-      authApi.middleware, 
-      addressApi.middleware, 
-      orderApi.middleware, 
-      complaintApi.middleware, 
-      discountApi.middleware, 
-      categoryApi.middleware, 
-      userApi.middleware, 
-      offerApi.middleware,
-      contactApi.middleware
+      // 🔥 4. SAARI MIDDLEWARES HATA KAR BAS MAIN MIDDLEWARE LAGA DIYA
+      apiSlice.middleware 
     ), 
 });
 
