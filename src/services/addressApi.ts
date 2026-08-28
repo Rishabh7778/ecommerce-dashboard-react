@@ -1,9 +1,24 @@
-import { apiSlice } from '../store/apiSlice'; 
+import { apiSlice } from '../store/apiSlice';
+
+export interface Address {
+    id: string | number;
+    fullName: string;
+    phone: string;
+    streetAddress: string;
+    city: string;
+    state: string;
+    pincode: string;
+    isDefault: boolean;
+}
+
+export interface AddressResponse {
+    addresses: Address[];
+}
 
 export const addressApi = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         // 1. Get Addresses
-        getMyAddresses: builder.query<any, void>({
+        getMyAddresses: builder.query<AddressResponse, void>({
             // Routing Process: /api pehle se hai, ab aage exactly '/address/my-addresses' jayega
             query: () => '/address/my-addresses', 
             providesTags: ['Address'],
