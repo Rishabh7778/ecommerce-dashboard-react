@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'; // Redirection ke liye zaroori h
 import { Mail, Lock, User, KeyRound, ShoppingBag, ArrowRight, Loader2, FastForward, EyeOff, Eye } from 'lucide-react';
 import { useRegisterMutation, useLoginMutation } from '../services/authApi';
 import Swal from 'sweetalert2';
+import loginimg from '../assets/images/login-images.webp'; 
 
 const Login = () => {
     const navigate = useNavigate();
@@ -77,12 +78,6 @@ const Login = () => {
         }
     };
 
-    const foodImages = [
-        "https://images.unsplash.com/photo-1540420828642-fca2c5918401?q=80&w=300&auto=format&fit=crop",
-        "https://images.unsplash.com/photo-1576402187878-974f70c890a5?q=80&w=300&auto=format&fit=crop",
-        "https://images.unsplash.com/photo-1610832958506-aa56368176cf?q=80&w=300&auto=format&fit=crop",
-        "https://images.unsplash.com/photo-1586201375761-83865001e31c?q=80&w=300&auto=format&fit=crop"
-    ];
 
     // Hum loading check kar rahe hain login aur register dono ke liye
     const isAuthenticating = isLoginLoading || isRegLoading;
@@ -113,11 +108,7 @@ const Login = () => {
                     </div>
 
                     <div className="absolute inset-x-0 bottom-0 pt-40 px-10 grid grid-cols-2 gap-4 opacity-80 scale-105 rotate-[-5deg]">
-                        {foodImages.map((img, index) => (
-                            <div key={index} className={`rounded-3xl overflow-hidden border-4 border-white shadow-xl shadow-emerald-950/10 bg-emerald-100 ${index % 2 !== 0 ? 'mt-10' : ''}`}>
-                                <img src={img} alt="food" className="w-full h-full object-cover aspect-square" />
-                            </div>
-                        ))}
+                         <img src={loginimg} alt="food" className="w-full h-full object-cover aspect-square" />
                     </div>
 
                     <div className="relative z-10 bg-white/85 backdrop-blur-md p-5 rounded-2xl border border-white/90 flex items-center gap-4 shadow-xl shadow-emerald-950/10">

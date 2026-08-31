@@ -145,9 +145,9 @@ const Header = () => {
 
         {/* Logo */}
         <div className="flex items-center gap-2 min-w-fit cursor-pointer mx-auto lg:mx-0">
-          <div className="text-3xl lg:text-4xl text-green-500 font-black tracking-tight flex items-center">
+          <a className="text-3xl lg:text-4xl text-green-500 font-black tracking-tight flex items-center" href="/">
             <img src={logo} alt="Nest Logo" className="w-20 h-20 lg:w-12 lg:h-12 mr-2" /> Freshiq
-          </div>
+          </a>
         </div>
 
         {/* Search Bar (Hidden on Mobile) */}
