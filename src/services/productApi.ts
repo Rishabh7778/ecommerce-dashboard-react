@@ -124,6 +124,11 @@ export const productApi = apiSlice.injectEndpoints({
       invalidatesTags: ['Product'],
     }),
 
+    removeDailyDeal: builder.mutation<any, number | string>({
+      query: (id) => ({ url: `/products/daily-deal/remove/${id}`, method: 'PUT' }),
+      invalidatesTags: ['Product'],
+    }),
+
     addReview: builder.mutation<any, { product_id: string | number, rating: number, review_text: string }>({
       query: (data) => ({
         url: '/products/review',
@@ -146,7 +151,8 @@ export const {
   useBulkAddProductsMutation,
   useGetCategoriesQuery,
   useUpdateProductMutation,
-  useDeleteProductMutation,
+    useDeleteProductMutation,
+    useRemoveDailyDealMutation,
   useCreateOrderMutation,
   useVerifyPaymentMutation,
   useApplyCategoryDiscountMutation,

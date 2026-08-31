@@ -1,11 +1,12 @@
 import { useState, useMemo } from 'react';
 import { Tag, Loader2, CheckCircle2, ChevronDown, Percent, IndianRupee, Trash2, List } from 'lucide-react';
-import { useGetAllProductsQuery, useUpdateProductMutation } from '../services/productApi';
+import { useGetAllProductsQuery, useUpdateProductMutation, useRemoveDailyDealMutation } from '../services/productApi';
 import Swal from 'sweetalert2';
 
 const AddDailyDealWidget = () => {
   const { data: productsData, isLoading } = useGetAllProductsQuery({ limit: 'all' });
   const [updateProduct, { isLoading: isUpdating }] = useUpdateProductMutation();
+  const [removeDailyDeal] = useRemoveDailyDealMutation();
 
   const [selectedProductId, setSelectedProductId] = useState('');
   const [discount, setDiscount] = useState('');
@@ -83,18 +84,7 @@ const AddDailyDealWidget = () => {
     if (!result.isConfirmed) return;
 
     try {
-      await Promise.all(products.map(async (product) => {
-        const formData = new FormData();
-        Object.keys(product).forEach((key) => {
-          if (product[key] !== null && product[key] !== undefined && key !== 'img' && key !== 'category_name') {
-            formData.append(key, product[key]);
-          }
-        });
-        formData.set('discount', '0');
-        formData.set('badge', 'None');
-        if (product.img) formData.append('existingImage', product.img);
-        await updateProduct({ id: product.id, data: formData }).unwrap();
-      }));
+      await Promise.all(products.map((product) => removeDailyDeal(product.id).unwrap()));
       setSelectedDealIds([]);
       Swal.fire({ icon: 'success', title: 'Daily deals removed', text: `${products.length} product${products.length > 1 ? 's' : ''} removed successfully.`, timer: 1700, showConfirmButton: false });
     } catch (error) {
