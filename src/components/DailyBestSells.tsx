@@ -10,7 +10,6 @@ import { addToCart } from '../features/cartSlice';
 import { useGetAllProductsQuery } from '../services/productApi';
 
 const DailyBestSells = () => {
-  const [activeTab] = useState("All");
   const sliderRef = useRef<HTMLDivElement>(null);
   
   // Setup Router & Dispatch
@@ -23,14 +22,10 @@ const DailyBestSells = () => {
   const [scrollLeft, setScrollLeft] = useState(0);
   const [dragged, setDragged] = useState(false); // 🔥 Track if actually dragged
 
-  // API Call
+  // Daily Deal aur Deals alag hain. Yahan sirf Daily Deal manager se selected products aayenge.
   const { data: productsData, isLoading } = useGetAllProductsQuery({ limit: 'all' });
   const allProducts = Array.isArray(productsData) ? productsData : productsData?.products || [];
-
-  const dailyDeals = allProducts.filter((p: any) => p.discount > 0);
-  const filteredProducts = dailyDeals.filter((p: any) =>
-    activeTab === "All" || activeTab === "Deals Of the Day" || p.category_name === activeTab
-  );
+  const dailyDeals = allProducts.filter((product: any) => product.badge === 'Daily Deal' && Number(product.discount) > 0);
 
   const scroll = (direction: 'left' | 'right') => {
     if (sliderRef.current) {
@@ -79,12 +74,14 @@ const DailyBestSells = () => {
         ...product,
         id: product.id,
         price: discountedPrice,
+        originalPrice: Number(product.price),
+        discountLabel: 'Daily Deal discount',
         img: productImage
     }));
   };
 
   return (
-    <section className="Daily-container mx-auto px-4 sm:px-6 lg:px-8 py-10 font-sans">
+    <section id="daily-best-sells" className="Daily-container mx-auto px-4 sm:px-6 lg:px-8 py-10 font-sans">
 
       {/* --- HEADER --- */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-8 gap-4">
@@ -144,43 +141,33 @@ const DailyBestSells = () => {
               </div>
             )}
 
-            {!isLoading && filteredProducts.length === 0 && (
+            {!isLoading && dailyDeals.length === 0 && (
               <div className="w-full flex items-center justify-center min-h-[300px] text-gray-500 font-medium">
-                No daily deals available right now.
+                No daily deals available right now. Check back soon!
               </div>
             )}
 
-            {!isLoading && filteredProducts.map((product: any) => {
+            {!isLoading && dailyDeals.map((product: any) => {
               const originalPrice = Number(product.price);
-              const discountAmount = originalPrice * (Number(product.discount) / 100);
-              const discountedPrice = originalPrice - discountAmount;
+              const discount = Number(product.discount);
+              const dealPrice = originalPrice - (originalPrice * discount / 100);
               const productImage = product.img ? product.img.split(',')[0] : dandy;
-              const rating = product.rating || 4.5;
-              const totalStock = product.stockCount || 100;
-              const soldItems = product.soldCount || Math.floor(totalStock * 0.75);
-              const soldPercentage = (soldItems / totalStock) * 100;
 
               return (
                 <div
                   key={product.id}
-                  onClick={() => handleProductClick(product.id)} // 🔥 Added Click to route
+                  onClick={() => handleProductClick(product.id)}
                   className="min-w-[240px] md:min-w-[280px] w-[240px] md:w-[280px] flex-shrink-0 snap-start bg-white border border-gray-200 rounded-[1.2rem] p-5 hover:border-[#3BB77E] hover:shadow-[0_10px_20px_rgba(0,0,0,0.04)] transition-all duration-300 flex flex-col relative group select-none cursor-pointer"
                 >
                   <span className="absolute top-0 left-0 bg-[#3BB77E] text-white text-[11px] font-bold px-3 py-1.5 rounded-tl-[1.1rem] rounded-br-[1.1rem] z-10">
-                    {product.discount}% Off
+                    Daily Deal · {discount}% Off
                   </span>
-
-                  {product.badge && product.badge !== 'None' && (
-                    <span className="absolute top-0 right-0 text-white text-[11px] font-bold px-3 py-1.5 rounded-tr-[1.1rem] rounded-bl-[1.1rem] z-10" style={{ backgroundColor: product.badgeColor || '#f74b81' }}>
-                      {product.badge}
-                    </span>
-                  )}
 
                   <div className="w-full h-40 md:h-48 mb-4 relative overflow-hidden rounded-xl flex items-center justify-center pointer-events-none bg-gray-50/50">
                     <img src={productImage} alt={product.title} className="max-h-full max-w-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-500 pointer-events-none" />
                   </div>
 
-                  <span className="text-[11px] text-gray-400 mb-1">{product.category_name || 'General'}</span>
+                  <span className="text-[11px] text-gray-400 mb-1">{product.category_name || 'Daily selection'}</span>
                   <h3 className="text-[14px] md:text-[15px] font-bold text-[#253D4E] leading-snug mb-2 hover:text-[#3BB77E] line-clamp-2">
                     {product.title}
                   </h3>
@@ -188,30 +175,22 @@ const DailyBestSells = () => {
                   <div className="flex items-center gap-2 mb-2">
                     <div className="flex text-[#fdc040]">
                       {[...Array(5)].map((_, i) => (
-                        <Star key={i} size={12} fill={i < Math.floor(rating) ? "currentColor" : "none"} strokeWidth={i < Math.floor(rating) ? 0 : 2} className={i >= Math.floor(rating) ? "text-gray-300" : ""} />
+                        <Star key={i} size={12} fill="currentColor" strokeWidth={0} />
                       ))}
                     </div>
-                    <span className="text-xs text-gray-400">{product.reviewsCount || 0}</span>
+                    <span className="text-xs text-gray-400">Daily selection</span>
                   </div>
 
                   <div className="flex items-end gap-2 mb-4">
-                    <span className="text-lg font-bold text-[#3BB77E]">₹{discountedPrice.toFixed(2)}</span>
-                    <span className="text-sm font-medium text-gray-400 line-through mb-0.5">₹{originalPrice.toFixed(2)}</span>
+                    <span className="text-lg font-bold text-[#3BB77E]">₹{dealPrice.toFixed(2)}</span>
+                    {originalPrice > dealPrice && <span className="text-sm font-medium text-gray-400 line-through mb-0.5">₹{originalPrice.toFixed(2)}</span>}
                   </div>
 
-                  <div className="mt-auto mb-4">
-                    <div className="w-full bg-gray-200 rounded-full h-1.5 mb-2 overflow-hidden">
-                      <div className="bg-[#3BB77E] h-1.5 rounded-full" style={{ width: `${soldPercentage}%` }}></div>
-                    </div>
-                    <div className="flex justify-between items-center text-xs font-semibold">
-                      <span className="text-[#253D4E]">Sold: {soldItems} / {totalStock}</span>
-                      <span className="text-[#3BB77E]">{Math.round(soldPercentage)}%</span>
-                    </div>
-                  </div>
+                  <div className="mt-auto mb-4 rounded-lg bg-emerald-50 px-3 py-2 text-center text-xs font-bold text-[#2fa06c]">Hand-picked daily special</div>
 
                   {/* 🔥 Add to Cart Handler attached here */}
                   <button
-                    onClick={(e) => handleAddToCart(e, product, discountedPrice, productImage)}
+                    onClick={(e) => handleAddToCart(e, product, dealPrice, productImage)}
                     className="w-full bg-[#3BB77E] hover:bg-[#2fa06c] text-white py-2.5 rounded-lg flex items-center justify-center gap-2 font-bold text-sm transition-colors duration-300 pointer-events-auto z-20 relative"
                   >
                     <ShoppingCart size={16} /> Add to cart

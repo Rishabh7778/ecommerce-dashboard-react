@@ -6,7 +6,7 @@ export interface Order {
     amount: number | string;
     payment_id?: string;
     status: 'pending' | 'success' | 'failed';
-    delivery_status: 'processing' | 'shipped' | 'delivered' | 'cancelled';
+    delivery_status: 'processing' | 'shipped' | 'out_for_delivery' | 'delivered' | 'cancelled';
     created_at: string;
     fullName?: string;
     city?: string;
@@ -14,6 +14,8 @@ export interface Order {
     userName?: string;
     userEmail?: string;
     products?: string;
+    product_id?: number;
+    product_image?: string;
 }
 
 export interface OrderResponse {

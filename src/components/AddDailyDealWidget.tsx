@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { Tag, Loader2, CheckCircle2, ChevronDown, Percent, IndianRupee, Trash2, List } from 'lucide-react';
 import { useGetAllProductsQuery, useUpdateProductMutation } from '../services/productApi';
+import Swal from 'sweetalert2';
 
 const AddDailyDealWidget = () => {
   const { data: productsData, isLoading } = useGetAllProductsQuery({ limit: 'all' });
@@ -9,6 +10,7 @@ const AddDailyDealWidget = () => {
   const [selectedProductId, setSelectedProductId] = useState('');
   const [discount, setDiscount] = useState('');
   const [success, setSuccess] = useState(false);
+  const [selectedDealIds, setSelectedDealIds] = useState<number[]>([]);
 
   // 1. All Products
   const allProducts = useMemo(() => 
@@ -65,32 +67,48 @@ const AddDailyDealWidget = () => {
     }
   };
 
-  // --- HANDLER: Remove Discount ---
-  const handleRemoveDeal = async (product: any) => {
-    if (window.confirm(`Are you sure you want to remove the deal from ${product.title}?`)) {
-      try {
+  const removeDeals = async (products: any[]) => {
+    const result = await Swal.fire({
+      title: products.length === 1 ? 'Remove this daily deal?' : `Remove ${products.length} daily deals?`,
+      text: products.length === 1 ? `${products[0].title} will no longer appear in Daily Best Sells.` : 'Selected products will no longer appear in Daily Best Sells.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, remove',
+      cancelButtonText: 'Keep deals',
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#64748b',
+      reverseButtons: true,
+    });
+
+    if (!result.isConfirmed) return;
+
+    try {
+      await Promise.all(products.map(async (product) => {
         const formData = new FormData();
-        
         Object.keys(product).forEach((key) => {
           if (product[key] !== null && product[key] !== undefined && key !== 'img' && key !== 'category_name') {
             formData.append(key, product[key]);
           }
         });
-
-        // 🔥 Discount wapas 0 kar diya
         formData.set('discount', '0');
         formData.set('badge', 'None');
-
-        if (product.img) {
-            formData.append('existingImage', product.img);
-        }
-
+        if (product.img) formData.append('existingImage', product.img);
         await updateProduct({ id: product.id, data: formData }).unwrap();
-      } catch (error) {
-        console.error("Failed to remove deal:", error);
-        alert("Failed to remove deal!");
-      }
+      }));
+      setSelectedDealIds([]);
+      Swal.fire({ icon: 'success', title: 'Daily deals removed', text: `${products.length} product${products.length > 1 ? 's' : ''} removed successfully.`, timer: 1700, showConfirmButton: false });
+    } catch (error) {
+      console.error('Failed to remove deals:', error);
+      Swal.fire('Could not remove deals', 'Please try again.', 'error');
     }
+  };
+
+  const toggleDealSelection = (id: number) => {
+    setSelectedDealIds((selected) => selected.includes(id) ? selected.filter((dealId) => dealId !== id) : [...selected, id]);
+  };
+
+  const toggleAllDeals = () => {
+    setSelectedDealIds(selectedDealIds.length === activeDeals.length ? [] : activeDeals.map((deal: any) => deal.id));
   };
 
   return (
@@ -192,9 +210,34 @@ const AddDailyDealWidget = () => {
           PART 3: ACTIVE DEALS LIST (Scrollable)
       ========================================== */}
       <div className="mt-4 flex-1 flex flex-col min-h-0 border-t border-gray-100 pt-4">
-        <h4 className="text-xs text-gray-400 font-bold uppercase tracking-wider mb-3 flex items-center gap-2">
-          <List size={14} /> Active Deals ({activeDeals.length})
-        </h4>
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+          <h4 className="text-xs text-gray-400 font-bold uppercase tracking-wider flex items-center gap-2">
+            <List size={14} /> Active Deals ({activeDeals.length})
+          </h4>
+          {activeDeals.length > 0 && (
+            <div className="flex items-center gap-3">
+              <label className="flex items-center gap-2 text-xs font-bold text-gray-500 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={selectedDealIds.length === activeDeals.length}
+                  onChange={toggleAllDeals}
+                  className="w-4 h-4 accent-[#3BB77E] cursor-pointer"
+                />
+                Select all
+              </label>
+              {selectedDealIds.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => removeDeals(activeDeals.filter((deal: any) => selectedDealIds.includes(deal.id)))}
+                  disabled={isUpdating}
+                  className="rounded-lg bg-red-50 px-3 py-1.5 text-xs font-bold text-red-600 hover:bg-red-100 disabled:opacity-60"
+                >
+                  Delete selected ({selectedDealIds.length})
+                </button>
+              )}
+            </div>
+          )}
+        </div>
 
         <div className="overflow-y-auto pr-2 pb-2 space-y-3" style={{ scrollbarWidth: 'thin', maxHeight: '220px' }}>
           {activeDeals.length === 0 && (
@@ -205,8 +248,15 @@ const AddDailyDealWidget = () => {
             const currentDealPrice = deal.price - (deal.price * (deal.discount / 100));
             
             return (
-              <div key={deal.id} className="flex items-center justify-between p-3 bg-white border border-gray-100 rounded-xl hover:shadow-md transition-shadow group">
+              <div key={deal.id} className={`flex items-center justify-between p-3 bg-white border rounded-xl hover:shadow-md transition-shadow group ${selectedDealIds.includes(deal.id) ? 'border-green-300 bg-green-50/30' : 'border-gray-100'}`}>
                 <div className="flex items-center gap-3 overflow-hidden">
+                  <input
+                    type="checkbox"
+                    checked={selectedDealIds.includes(deal.id)}
+                    onChange={() => toggleDealSelection(deal.id)}
+                    className="w-4 h-4 accent-[#3BB77E] cursor-pointer shrink-0"
+                    aria-label={`Select ${deal.title}`}
+                  />
                   <img 
                     src={deal.img ? deal.img.split(',')[0] : 'https://via.placeholder.com/50'} 
                     alt="thumbnail" 
@@ -223,7 +273,7 @@ const AddDailyDealWidget = () => {
                 </div>
 
                 <button 
-                  onClick={() => handleRemoveDeal(deal)}
+                  onClick={() => removeDeals([deal])}
                   disabled={isUpdating}
                   title="Remove Discount"
                   className="p-2 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"

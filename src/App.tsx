@@ -19,13 +19,14 @@ import NotFound from './pages/NotFound';
 import Wishlist from './components/Wishlist';
 import AdminDiscount from './components/AdminDiscount';
 import Transactions from './components/AdminTransaction';
-import AdminProducts from './components/AdminProducts';
 import AddDailyDealWidget from './components/AddDailyDealWidget';
+import AdminProducts from './components/AdminProducts';
 import AboutPage from './components/About';
 import ContactPage from './components/ContactPage';
 import AdminDeals from './components/AdminDeals';
 import ScrollToTop from './components/ScrollToTop';
 import AdminContactSection from './components/AdminContactSection';
+import { PrivacyPolicy, TermsConditions } from './pages/LegalPages';
 
 function App() {
   return (
@@ -45,6 +46,8 @@ function App() {
             <Route path="/shop" element={<ShopPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<TermsConditions />} />
             <Route path="/product/:id" element={<ProductDetailsPage />} />
 
             {/* Private User Pages */}

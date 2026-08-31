@@ -13,6 +13,7 @@ interface Deal {
   oldPrice: number | string;
   img: string;
   targetDate: number;
+  discountPercentage: number;
 }
 
 // ⏳ Single Timer Box
@@ -231,10 +232,10 @@ useEffect(() => {
 
                     <div className="flex items-center justify-between">
                       <div>
-                        <span className="text-lg font-bold text-[#3BB77E]">${Number(deal.price).toFixed(2)}</span>
+                        <span className="text-lg font-bold text-[#3BB77E]">₹{Number(deal.price).toFixed(2)}</span>
                         {Number(deal.oldPrice) > Number(deal.price) && (
                           <span className="text-xs font-medium text-gray-400 line-through ml-1.5">
-                            ${Number(deal.oldPrice).toFixed(2)}
+                            ₹{Number(deal.oldPrice).toFixed(2)}
                           </span>
                         )}
                       </div>

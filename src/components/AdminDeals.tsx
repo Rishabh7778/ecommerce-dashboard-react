@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, X, Clock } from 'lucide-react';
+import { Plus, Trash2, X, Clock, ChevronRight, LayoutDashboard, Tag } from 'lucide-react';
 import { 
     useGetDealsQuery, 
     useGetEligibleProductsQuery, 
@@ -22,21 +22,23 @@ const AdminDeals = () => {
     // State for Modal
     const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
     const [targetDate, setTargetDate] = useState('');
+    const [discountPercentage, setDiscountPercentage] = useState('');
 
     const openModal = (id: number) => {
         setSelectedProductId(id);
         setTargetDate('');
+        setDiscountPercentage('');
     };
 
     const handleAddDeal = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!selectedProductId || !targetDate) return;
+        if (!selectedProductId || !targetDate || !discountPercentage) return;
 
         // Convert datetime-local to MySQL DATETIME format (YYYY-MM-DD HH:MM:SS)
         const mysqlDate = targetDate.replace('T', ' ') + ':00';
 
         try {
-            await addDealFromProduct({ productId: selectedProductId, targetDate: mysqlDate }).unwrap();
+            await addDealFromProduct({ productId: selectedProductId, targetDate: mysqlDate, discountPercentage: Number(discountPercentage) }).unwrap();
             setSelectedProductId(null);
         } catch (error) {
             console.error("Failed to add deal", error);
@@ -46,6 +48,12 @@ const AdminDeals = () => {
 
     return (
         <div className="p-6 max-w-7xl mx-auto space-y-10">
+            <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-sm font-medium text-gray-400">
+                <LayoutDashboard size={15} className="text-[#3BB77E]" />
+                <span>Admin</span>
+                <ChevronRight size={15} />
+                <span className="flex items-center gap-1.5 text-[#253D4E]"><Tag size={14} className="text-[#3BB77E]" /> Deals of the Day</span>
+            </nav>
             
             {/* --- SECTION 1: ACTIVE DEALS --- */}
             <section>
@@ -69,7 +77,7 @@ const AdminDeals = () => {
                                     <img src={dealImage} alt={deal.title} className="w-full h-32 object-cover rounded-md mb-3 bg-gray-50" />
                                     
                                     <h3 className="font-bold text-sm line-clamp-1">{deal.title}</h3>
-                                    <p className="text-[#3BB77E] font-bold mt-1">${deal.price} <span className="line-through text-gray-400 text-xs">${deal.oldPrice}</span></p>
+                                    <p className="text-[#3BB77E] font-bold mt-1">₹{Number(deal.price).toFixed(2)} <span className="line-through text-gray-400 text-xs">₹{Number(deal.oldPrice).toFixed(2)}</span> <span className="text-xs text-red-500">{deal.discountPercentage}% off</span></p>
                                     <div className="mt-2 text-xs flex items-center gap-1 text-orange-500 font-medium bg-orange-50 p-1.5 rounded">
                                         <Clock size={14} /> Ends: {new Date(deal.targetDate).toLocaleString()}
                                     </div>
@@ -158,6 +166,10 @@ const AdminDeals = () => {
                                     required 
                                     className="w-full border rounded p-2 focus:ring-[#3BB77E] outline-none" 
                                 />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Deal Discount (%)</label>
+                                <input type="number" min="1" max="99" value={discountPercentage} onChange={(e) => setDiscountPercentage(e.target.value)} required placeholder="e.g. 20" className="w-full border rounded p-2 focus:ring-[#3BB77E] outline-none" />
                             </div>
                             <div className="flex justify-end gap-2 pt-2">
                                 <button type="button" onClick={() => setSelectedProductId(null)} className="px-4 py-2 border rounded text-gray-600">Cancel</button>

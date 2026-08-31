@@ -6,10 +6,10 @@ import {
 
 const AboutPage = () => {
   return (
-    <div className="bg-[#f8f9fa] font-sans text-[#253D4E] overflow-x-hidden">
+    <div className="bg-[#f7faf8] font-sans text-[#19364d] overflow-x-hidden">
       
       {/* 1. PREMIUM HERO SECTION */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[620px] flex items-center justify-center overflow-hidden">
         {/* Background Image with Gradient Overlay */}
         <div className="absolute inset-0 z-0">
           <img 
@@ -17,28 +17,28 @@ const AboutPage = () => {
             alt="Bitezone Premium Fresh Food" 
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#253D4E]/90 via-[#253D4E]/70 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-[#102c42]/95 via-[#19364d]/80 to-[#19364d]/30"></div>
         </div>
 
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center pt-20">
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center py-24">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#3BB77E]/20 text-[#3BB77E] backdrop-blur-md border border-[#3BB77E]/30 mb-6">
               <Leaf size={16} />
-              <span className="text-sm font-bold tracking-wider uppercase">India's #1 Fresh Food Network</span>
+              <span className="text-sm font-bold tracking-wider uppercase">Fresh groceries, thoughtfully delivered</span>
             </div>
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-black mb-6 leading-[1.1] text-white">
-              Redefining <br />
-              <span className="text-[#3BB77E]">Food Commerce.</span>
+              Freshness you can <br />
+              <span className="text-[#55d493]">trust every day.</span>
             </h1>
             <p className="text-lg md:text-xl text-gray-300 mb-10 max-w-2xl leading-relaxed">
-              Bitezone sirf ek food platform nahi hai, ye ek revolution hai. Farm-fresh ingredients se lekar ultra-fast delivery tak—hum technology aur shuddhata ka behtareen anubhav (experience) deliver karte hain.
+              Freshq brings dependable quality, transparent choices, and everyday convenience together in one simple grocery experience.
             </p>
             <div className="flex flex-wrap gap-4">
-              <button className="bg-[#3BB77E] text-white px-8 py-4 rounded-full font-bold shadow-[0_8px_30px_rgb(59,183,126,0.3)] hover:bg-[#2fa06c] hover:-translate-y-1 transition-all flex items-center gap-2">
-                Explore Our Supply Chain <ArrowRight size={18} />
+              <button className="bg-[#31b875] text-white px-8 py-4 rounded-xl font-bold shadow-[0_8px_30px_rgb(49,184,117,0.3)] hover:bg-[#279b61] hover:-translate-y-1 transition-all flex items-center gap-2">
+                Discover Freshq <ArrowRight size={18} />
               </button>
-              <button className="bg-white/10 text-white backdrop-blur-md border border-white/20 px-8 py-4 rounded-full font-bold hover:bg-white/20 transition-all">
-                Partner With Us
+              <button className="bg-white/10 text-white backdrop-blur-md border border-white/20 px-8 py-4 rounded-xl font-bold hover:bg-white/20 transition-all">
+                Our quality promise
               </button>
             </div>
           </div>
@@ -47,7 +47,7 @@ const AboutPage = () => {
 
       {/* 2. FLOATING STATS BAR (E-commerce Style) */}
       <section className="relative z-20 -mt-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 grid grid-cols-2 md:grid-cols-4 gap-8 divide-x divide-gray-100">
+        <div className="bg-white rounded-3xl shadow-[0_24px_60px_-30px_rgba(25,54,77,0.35)] p-8 md:p-10 grid grid-cols-2 md:grid-cols-4 gap-8 divide-x divide-gray-100">
           {[
             { number: "2M+", label: "Active Customers", icon: <Users className="text-[#3BB77E] mb-2" size={28}/> },
             { number: "500+", label: "Partner Farms", icon: <Leaf className="text-[#3BB77E] mb-2" size={28}/> },
@@ -88,11 +88,11 @@ const AboutPage = () => {
           
           <div>
             <span className="text-[#3BB77E] font-bold tracking-wider uppercase text-sm mb-4 block">Our Origin Story</span>
-            <h2 className="text-4xl md:text-5xl font-black mb-8 leading-tight">Bitezone Ka Janm: <br/> Swaad Aur Shuddhata Ki Khoj</h2>
+            <h2 className="text-4xl md:text-5xl font-black mb-8 leading-tight">Freshq Ka Janm: <br/> Swaad Aur Shuddhata Ki Khoj</h2>
             
             <div className="space-y-6 text-gray-600 text-lg leading-relaxed">
               <p>
-                Bitezone ki shuruat ek simple khayal se hui thi: <strong>"Kya har ghar ko restaurant jaisa swaad aur khet jaisi taazgi ek sath mil sakti hai?"</strong> Pehle din se hi humara focus sirf delivery par nahi, balki quality supply chain build karne par tha.
+                Freshq ki shuruat ek simple khayal se hui thi: <strong>"Kya har ghar ko restaurant jaisa swaad aur khet jaisi taazgi ek sath mil sakti hai?"</strong> Pehle din se hi humara focus sirf delivery par nahi, balki quality supply chain build karne par tha.
               </p>
               <p>
                 Humne local vendors, organic farmers, aur top culinary experts ke sath milkar ek aisa ecosystem banaya jo quality par kabhi compromise nahi karta. Aaj ke advanced e-commerce yug mein, hum AI aur machine learning ka use karte hain demand predict karne aur wastage ko zero karne ke liye.

@@ -9,7 +9,7 @@ export const offerApi = apiSlice.injectEndpoints({
         getEligibleProducts: builder.query<any, void>({
             query: () => '/deals/eligible-products', 
         }),
-        addDealFromProduct: builder.mutation<any, { productId: number, targetDate: string }>({
+        addDealFromProduct: builder.mutation<any, { productId: number, targetDate: string, discountPercentage: number }>({
             query: (data) => ({
                 url: '/deals/add-from-product',
                 method: 'POST',

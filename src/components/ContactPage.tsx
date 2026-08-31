@@ -58,26 +58,26 @@ const ContactPage = () => {
   };
 
   return (
-    <div className="bg-[#f8fcf9] min-h-screen font-sans text-[#253D4E] selection:bg-[#3BB77E] selection:text-white pb-20">
+    <div className="bg-[#f7faf8] min-h-screen font-sans text-[#19364d] selection:bg-[#31b875] selection:text-white pb-20">
       
       {/* 1. HERO SECTION WITH CREATIVE SHAPES */}
-      <section className="relative bg-[#253D4E] pt-24 pb-48 overflow-hidden rounded-b-[3rem] lg:rounded-b-[5rem]">
+      <section className="relative bg-[#19364d] pt-24 pb-44 overflow-hidden">
         <div className="absolute top-0 left-0 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#3BB77E] opacity-10 rounded-full blur-3xl translate-x-1/3 translate-y-1/3"></div>
 
         <div className="relative z-10 text-center px-4">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md text-[#3BB77E] font-medium mb-6 border border-white/10">
             <MessageSquare size={18} />
-            <span>24/7 Support Available</span>
+            <span>Freshq customer care</span>
           </div>
           <h1 className="text-4xl md:text-6xl font-black mb-6 text-white tracking-tight">
-            Humein <span className="text-[#3BB77E] relative inline-block">
-              Sampark
+            We are here to <span className="text-[#55d493] relative inline-block">
+              help
               <svg className="absolute -bottom-2 left-0 w-full text-[#3BB77E] opacity-50" viewBox="0 0 100 20" preserveAspectRatio="none"><path d="M0 10 Q 50 20 100 10" fill="transparent" stroke="currentColor" strokeWidth="4"/></svg>
             </span> Karein
           </h1>
           <p className="text-gray-300 max-w-2xl mx-auto text-lg font-light">
-            Bitezone ki team hamesha aapki madad ke liye taiyar hai. Chahe wo order ho ya koi sujhav, hum bas ek message ki doori par hain.
+            Questions about an order, product, or delivery? Our support team is just one message away.
           </p>
         </div>
       </section>
@@ -88,8 +88,8 @@ const ContactPage = () => {
           
           {/* LEFT SIDE: Contact Info & Location Button */}
           <div className="lg:col-span-5 space-y-6">
-            <div className="bg-white p-8 rounded-[2rem] shadow-xl shadow-gray-200/50 border border-gray-100 flex flex-col gap-6">
-              <h3 className="text-2xl font-bold mb-2">Reach Out to Us</h3>
+            <div className="bg-white p-8 rounded-3xl shadow-[0_20px_50px_-28px_rgba(25,54,77,0.3)] border border-gray-100 flex flex-col gap-4">
+              <p className="text-xs font-bold uppercase tracking-[0.15em] text-[#31b875]">Talk to our team</p><h3 className="text-2xl font-extrabold mb-2">Reach out to Freshq</h3>
               
               <div className="group flex items-start gap-5 p-4 rounded-2xl hover:bg-green-50 transition-colors duration-300 cursor-pointer">
                 <div className="p-4 bg-gray-50 group-hover:bg-white group-hover:shadow-md text-[#3BB77E] rounded-xl transition-all duration-300 shadow-sm"><Phone size={24}/></div>
@@ -103,7 +103,7 @@ const ContactPage = () => {
                 <div className="p-4 bg-gray-50 group-hover:bg-white group-hover:shadow-md text-[#3BB77E] rounded-xl transition-all duration-300 shadow-sm"><Mail size={24}/></div>
                 <div>
                   <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">Email Support</p>
-                  <p className="font-bold text-lg text-[#253D4E]">help@bitezone.com</p>
+                  <p className="font-bold text-lg text-[#253D4E]">help@freshq.com</p>
                 </div>
               </div>
 
@@ -117,13 +117,13 @@ const ContactPage = () => {
             </div>
 
             {/* LIVE LOCATION WIDGET */}
-            <div className="relative overflow-hidden p-8 rounded-[2rem] text-white shadow-xl shadow-green-900/20 group">
+            <div className="relative overflow-hidden p-8 rounded-3xl text-white shadow-xl shadow-green-900/20 group">
               <div className="absolute inset-0 bg-gradient-to-br from-[#3BB77E] via-[#2ba36a] to-[#1e7a4e] z-0"></div>
               <div className="absolute -right-10 -top-10 w-40 h-40 bg-white opacity-10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700 z-0"></div>
               
               <div className="relative z-10">
-                <h3 className="text-2xl font-bold mb-3">Nearby Bitezone?</h3>
-                <p className="text-sm text-green-50 mb-8 leading-relaxed">Apni live location on karein taaki hum aapke sabse nazdeeki outlet dikha sakein aur fast delivery ensure karein.</p>
+                <h3 className="text-2xl font-bold mb-3">Find Freshq near you</h3>
+                <p className="text-sm text-green-50 mb-8 leading-relaxed">Share your location to find the nearest service area and faster delivery options.</p>
                 <button 
                   onClick={handleLiveLocation}
                   disabled={loadingLocation}
@@ -137,10 +137,10 @@ const ContactPage = () => {
 
           {/* RIGHT SIDE: Contact Form */}
           <div className="lg:col-span-7">
-            <div className="bg-white p-8 md:p-12 rounded-[2rem] shadow-xl shadow-gray-200/50 border border-gray-100">
+            <div className="bg-white p-8 md:p-12 rounded-3xl shadow-[0_20px_50px_-28px_rgba(25,54,77,0.3)] border border-gray-100">
               <div className="mb-8">
-                <h2 className="text-3xl font-black text-[#253D4E] mb-3">Message Bhejein</h2>
-                <p className="text-gray-500">Kuch poochna chahte hain? Form bhariye aur humari team aapse jaldi contact karegi.</p>
+                <p className="text-xs font-bold uppercase tracking-[0.15em] text-[#31b875] mb-3">Send us a message</p><h2 className="text-3xl font-black text-[#19364d] mb-3">How can we help?</h2>
+                <p className="text-gray-500">Share your question and our team will get back to you shortly.</p>
               </div>
               
               {/* Dynamic Notification Panel */}
@@ -234,7 +234,7 @@ const ContactPage = () => {
 
         {/* 3. MAP SECTION (BOTTOM WIDE) */}
         <div className="mt-20 relative">
-          <div className="absolute inset-0 bg-[#3BB77E] rounded-[3rem] rotate-1 scale-105 opacity-10 z-0"></div>
+          <div className="absolute inset-0 rounded-[3rem] rotate-1 scale-105 opacity-10 z-0"></div>
           <div className="relative z-10 rounded-[2.5rem] overflow-hidden h-[450px] shadow-2xl border-[6px] border-white group">
             <div className="absolute top-6 left-6 z-20 bg-white/90 backdrop-blur-sm px-6 py-3 rounded-2xl shadow-xl flex items-center gap-3 border border-white">
               <span className="relative flex h-4 w-4">

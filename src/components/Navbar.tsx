@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { ShoppingCart, User, Grid, ChevronDown, Flame, Headphones, Menu, X, Heart } from 'lucide-react';
-import { NavLink, Link } from 'react-router-dom';
+import { ShoppingCart, User, Grid, ChevronDown, Flame, Headphones, Menu, X, Heart, Search, Loader2 } from 'lucide-react';
+import { NavLink, Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/images/logo.png';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../store/store';
@@ -8,8 +8,10 @@ import cartTone from '../assets/cart-tone.mp3';
 
 // API import
 import { useGetCategoriesQuery } from '../services/discountApi'; 
+import { useGetAllProductsQuery } from '../services/productApi';
 
 const Header = () => {
+  const navigate = useNavigate();
   // 1. Pehle Redux se data nikaliye
   const cartItems = useSelector((state: RootState) => state.cart.cartItems);
   
@@ -21,12 +23,36 @@ const Header = () => {
   const wishlistItems = useSelector((state: RootState) => state.wishlist?.wishlistItems || []);
 
   const { data: categories, isLoading: isCategoriesLoading } = useGetCategoriesQuery();
+  const { data: productsResponse, isLoading: isProductsLoading } = useGetAllProductsQuery({ page: 1, limit: 100 });
   // ... baaki poora code same rahega
 
   // States
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // 🔥 Mobile Menu State
   const [isCartAnimating, setIsCartAnimating] = useState(false); // 🔥 Cart Animation State
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  const searchableProducts = productsResponse?.products || [];
+  const searchResults = searchTerm.trim()
+    ? searchableProducts
+        .filter((product: any) =>
+          (product.status === 'active' || product.status === 'published') &&
+          product.title?.toLowerCase().includes(searchTerm.trim().toLowerCase())
+        )
+        .slice(0, 6)
+    : [];
+
+  const openProduct = (productId: string | number) => {
+    setSearchTerm('');
+    setIsSearchOpen(false);
+    navigate(`/product/${productId}`);
+  };
+
+  const handleSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (searchResults.length) openProduct(searchResults[0].id);
+  };
 
   // 🔥 ANIMATED SLIDER LOGIC
   const announcements = [
@@ -125,15 +151,51 @@ const Header = () => {
         </div>
 
         {/* Search Bar (Hidden on Mobile) */}
-        <div className="flex-1 max-w-2xl hidden md:flex border-2 border-green-500 rounded-md overflow-hidden">
-          <input 
-            type="text" 
-            placeholder="Search for products..." 
-            className="w-full px-4 py-2.5 text-sm focus:outline-none text-gray-700 placeholder-gray-400"
-          />
-          <button className="bg-green-500 text-white px-6 font-semibold text-sm hover:bg-green-600 transition-colors">
-            Search
-          </button>
+        <div className="flex-1 max-w-2xl hidden md:block relative">
+          <form onSubmit={handleSearchSubmit} className="flex border-2 border-green-500 rounded-md overflow-hidden bg-white">
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+              onFocus={() => setIsSearchOpen(true)}
+              onBlur={() => window.setTimeout(() => setIsSearchOpen(false), 150)}
+              placeholder="Search for products..."
+              className="w-full px-4 py-2.5 text-sm focus:outline-none text-gray-700 placeholder-gray-400"
+            />
+            <button type="submit" className="bg-green-500 text-white px-6 font-semibold text-sm hover:bg-green-600 transition-colors">
+              <span className="flex items-center gap-2"><Search size={16} /> Search</span>
+            </button>
+          </form>
+
+          {isSearchOpen && searchTerm.trim() && (
+            <div className="absolute top-[calc(100%+8px)] left-0 right-0 z-[70] overflow-hidden rounded-xl border border-gray-100 bg-white shadow-xl shadow-gray-200/60">
+              {isProductsLoading ? (
+                <div className="flex items-center justify-center gap-2 px-4 py-5 text-sm text-gray-500"><Loader2 size={16} className="animate-spin text-green-500" /> Searching products...</div>
+              ) : searchResults.length ? (
+                <ul className="py-2">
+                  {searchResults.map((product: any) => (
+                    <li key={product.id}>
+                      <button
+                        type="button"
+                        onMouseDown={(event) => event.preventDefault()}
+                        onClick={() => openProduct(product.id)}
+                        className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-green-50 transition-colors"
+                      >
+                        <img src={product.img?.split(',')[0] || 'https://via.placeholder.com/48?text=Product'} alt="" className="h-11 w-11 rounded-lg bg-gray-100 object-cover" />
+                        <span className="min-w-0 flex-1">
+                          <span className="block truncate text-sm font-semibold text-gray-800">{product.title}</span>
+                          <span className="block text-xs text-gray-500">{product.brand || 'Freshq'}</span>
+                        </span>
+                        <span className="text-sm font-bold text-green-600">₹{Number(product.discounted_price || product.price || 0).toFixed(0)}</span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div className="px-4 py-5 text-center text-sm text-gray-500">No products found for “{searchTerm}”</div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Right Actions */}
@@ -234,10 +296,19 @@ const Header = () => {
 
           <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-6">
             {/* Mobile Search */}
-            <div className="flex border border-gray-200 rounded-md overflow-hidden">
-              <input type="text" placeholder="Search..." className="w-full px-3 py-2 text-sm focus:outline-none" />
-              <button className="bg-green-500 text-white px-4 text-sm font-bold">Go</button>
-            </div>
+            <form onSubmit={handleSearchSubmit} className="flex border border-gray-200 rounded-md overflow-hidden">
+              <input value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} type="text" placeholder="Search products..." className="w-full px-3 py-2 text-sm focus:outline-none" />
+              <button type="submit" className="bg-green-500 text-white px-4 text-sm font-bold">Go</button>
+            </form>
+            {searchTerm.trim() && searchResults.length > 0 && (
+              <div className="-mt-3 overflow-hidden rounded-lg border border-gray-100">
+                {searchResults.slice(0, 4).map((product: any) => (
+                  <button key={product.id} type="button" onClick={() => { openProduct(product.id); setIsMobileMenuOpen(false); }} className="w-full border-b border-gray-100 px-3 py-2.5 text-left text-sm font-medium text-gray-700 last:border-0 hover:bg-green-50">
+                    {product.title}
+                  </button>
+                ))}
+              </div>
+            )}
 
             {/* Mobile Nav Links */}
             <nav className="flex flex-col gap-4 font-bold text-gray-700">

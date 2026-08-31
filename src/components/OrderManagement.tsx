@@ -70,7 +70,11 @@ const AdminOrders = () => {
                     </td>
                     
                     <td className="p-4 font-semibold text-gray-800">
-                        ₹{order.amount}
+                        <div>₹{Number(order.amount).toFixed(2)}</div>
+                        {Number(order.discount_amount) > 0 && (
+                          <div className="mt-1 text-xs font-bold text-green-600">{order.discount_label || 'Discount'} applied: -₹{Number(order.discount_amount).toFixed(2)}</div>
+                        )}
+                        {Number(order.original_price) > Number(order.amount) && <div className="text-xs text-gray-400 line-through">Original ₹{Number(order.original_price).toFixed(2)}</div>}
                     </td>
                     
                     <td className="p-4">
@@ -88,6 +92,7 @@ const AdminOrders = () => {
                       >
                         <option value="processing">Processing</option>
                         <option value="shipped">Shipped</option>
+                        <option value="out_for_delivery">Out for Delivery</option>
                         <option value="delivered">Delivered</option>
                         <option value="cancelled">Cancelled</option>
                       </select>

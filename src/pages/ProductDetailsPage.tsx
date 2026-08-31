@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import type { RootState } from '../store/store';
-import { Star, Heart, Loader2, ChevronRight } from 'lucide-react';
+import { Star, Heart, Loader2 } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleWishlist } from '../features/wishlistSlice';
 import { addToCart } from '../features/cartSlice';
@@ -27,6 +27,9 @@ const ProductDetailsPage = () => {
     const [submitReview, { isLoading: isReviewSubmitting }] = useAddReviewMutation();
 
     const reviews = reviewsData?.reviews || [];
+    const activeDiscount = Math.max(Number(product?.discount || 0), Number((product as any)?.deal_discount || 0));
+    const effectiveUnitPrice = Number(product?.price || 0) * (1 - activeDiscount / 100);
+    const discountLabel = Number((product as any)?.deal_discount || 0) > 0 ? 'Deals of the Day discount' : activeDiscount > 0 ? 'Daily Deal discount' : undefined;
 
     // State Management for Gallery & Zoom
     const [mainImage, setMainImage] = useState('');
@@ -80,7 +83,9 @@ const ProductDetailsPage = () => {
         dispatch(addToCart({
             ...product,
             id: product.id!,
-            price: Number(product.discounted_price || product.price),
+            price: effectiveUnitPrice,
+            originalPrice: Number(product.price),
+            discountLabel,
             img: imagesArray[0] || ''
         }));
     };
@@ -105,7 +110,7 @@ const ProductDetailsPage = () => {
     if (isLoading) return <div className="flex justify-center items-center h-screen"><Loader2 className="animate-spin text-green-500 w-12 h-12" /></div>;
     if (error || !product) return <div className="text-center py-20 text-red-500 font-bold text-xl">Product Not Found!</div>;
 
-    const currentPrice = Number(product.discounted_price || product.price).toFixed(2);
+    const currentPrice = effectiveUnitPrice.toFixed(2);
     const originalPrice = Number(product.price).toFixed(2);
 
     // 🔥 STOCK LOGIC
@@ -132,12 +137,6 @@ const ProductDetailsPage = () => {
                     background-size: 250%; 
                 }
             `}</style>
-
-            <div className="flex items-center text-sm text-gray-500 mb-6 gap-2">
-                <span>Home</span> <ChevronRight size={14} />
-                <span>Accessories</span> <ChevronRight size={14} />
-                <span className="font-semibold text-gray-800">{product.brand || 'Brand'}</span>
-            </div>
 
             <div className="flex flex-col lg:flex-row gap-10 relative">
 
@@ -196,7 +195,7 @@ const ProductDetailsPage = () => {
                                 <span className="text-lg text-gray-400 line-through">₹ {originalPrice}</span>
                             )}
                         </div>
-                        <span className="text-sm font-bold text-teal-600">inclusive of all taxes</span>
+                        <span className="text-sm font-bold text-teal-600">inclusive of all taxes {activeDiscount > 0 ? `• ${activeDiscount}% ${discountLabel}` : ''}</span>
                     </div>
 
                     {/* SCARCITY WARNING UI */}
@@ -221,7 +220,7 @@ const ProductDetailsPage = () => {
                             onClick={() => dispatch(toggleWishlist({
                                 id: product.id!,
                                 title: product.title,
-                                price: Number(product.discounted_price || product.price),
+                                price: effectiveUnitPrice,
                                 img: imagesArray[0] || ''
                             }))}
                             className="p-2 rounded-full border bg-white hover:bg-gray-50 transition-colors shadow-sm"

@@ -137,7 +137,7 @@ const ShoppingCart: React.FC = () => {
                       <div className="w-16 h-16 bg-gray-50 rounded-lg overflow-hidden flex-shrink-0">
                         <img src={item.img} alt={item.title} className="w-full h-full object-cover mix-blend-multiply" />
                       </div>
-                      <span className="font-semibold text-gray-700 min-w-[100px]">{item.title}</span>
+                      <div className="min-w-[100px]"><span className="font-semibold text-gray-700">{item.title}</span>{item.discountLabel && <p className="mt-1 text-xs font-bold text-green-600">{item.discountLabel} applied</p>}</div>
                     </div>
 
                     <div className="flex items-center gap-8 lg:gap-12">
@@ -148,7 +148,7 @@ const ShoppingCart: React.FC = () => {
                           <button onClick={() => dispatch(updateCartQuantity({ id: item.id, delta: -1 }))}><ChevronDown className="w-4 h-4" /></button>
                         </div>
                       </div>
-                      <div className="w-16 text-right font-medium text-gray-700 text-sm">Tk.{(item.price * item.quantity).toFixed(2)}</div>
+                      <div className="w-24 text-right text-sm"><div className="font-medium text-gray-700">₹{(item.price * item.quantity).toFixed(2)}</div>{item.originalPrice && item.originalPrice > item.price && <div className="text-xs text-gray-400 line-through">₹{(item.originalPrice * item.quantity).toFixed(2)}</div>}</div>
                       <button onClick={() => dispatch(removeFromCart(item.id))} className="p-2 text-gray-400 hover:text-red-500"><Trash2 className="w-5 h-5" /></button>
                     </div>
                   </div>

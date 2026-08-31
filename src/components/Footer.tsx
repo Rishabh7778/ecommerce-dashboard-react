@@ -1,163 +1,37 @@
-// Lucide se brand icons HATA dein, sirf normal UI icons rakhein:
-import { MapPin, Headphones, Mail, Clock, PhoneCall } from 'lucide-react';
-
+import { MapPin, Headphones, Mail, Clock, PhoneCall, ArrowUpRight, Leaf } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import logo from '../assets/images/logo.png';
-
-// react-icons se naye brand icons IMPORT karein:
-import { FaFacebook, FaTwitter, FaInstagram, FaYoutube } from 'react-icons/fa';
+import { FaFacebook, FaInstagram, FaYoutube } from 'react-icons/fa';
 
 const Footer = () => {
-  // Footer Links Data
-  const footerLinks = [
-    {
-      title: "Company",
-      links: ["About Us", "Delivery Information", "Privacy Policy", "Terms & Conditions", "Contact Us", "Support Center", "Careers"]
-    },
-    {
-      title: "Account",
-      links: ["Sign In", "View Cart", "My Wishlist", "Track My Order", "Help Ticket", "Shipping Details", "Compare products"]
-    },
-    {
-      title: "Corporate",
-      links: ["Become a Vendor", "Affiliate Program", "Farm Business", "Farm Careers", "Our Suppliers", "Accessibility", "Promotions"]
-    },
-    {
-      title: "Popular",
-      links: ["Milk & Flavoured Milk", "Butter and Margarine", "Eggs Substitutes", "Marmalades", "Sour Cream and Dips", "Tea & Kombucha", "Cheese"]
-    }
+  const columns = [
+    { title: 'Freshq', links: [['About Us', '/about'], ['Contact Us', '/contact'], ['Privacy Policy', '/privacy'], ['Terms & Conditions', '/terms']] },
+    { title: 'Shop', links: [['Fresh Groceries', '/shop'], ['Daily Best Sells', '/#daily-best-sells'], ['Deals of the Day', '/#deals-of-the-day'], ['My Account', '/account']] },
+    { title: 'Customer Care', links: [['Track My Order', '/account'], ['My Wishlist', '/wishlist'], ['Shopping Cart', '/cart'], ['Help & Support', '/contact']] },
   ];
 
-  return (
-    <footer className="bg-white pt-16 pb-8 border-t border-gray-200 font-sans mt-12">
-      <div className=" mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* --- TOP GRID SECTION --- */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 mb-12">
-          
-          {/* 1. Contact Info Column (Takes more space on tablet) */}
-          <div className="sm:col-span-2 md:col-span-1 lg:col-span-1">
-            {/* Logo Placeholder */}
-            <div className="flex items-center gap-2 mb-6 cursor-pointer">
-              <div className="text-4xl text-green-500 font-black tracking-tight flex items-center">
-                <img src={logo} alt="Freshiq Logo" className="w-10 h-10 lg:w-12 lg:h-12 mr-2" />Freshiq
-                
-              </div>
-            </div>
-            
-            <p className="text-[15px] text-gray-500 mb-6 leading-relaxed">
-              Awesome grocery store website template
-            </p>
-            
-            <ul className="space-y-4 text-[14px] text-gray-600">
-              <li className="flex items-start gap-2">
-                <MapPin size={18} className="text-[#3BB77E] flex-shrink-0 mt-1" />
-                <span><strong className="text-[#253D4E]">Address:</strong> 5171 W Campbell Ave undefined Kent, Utah 53127 United States</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <Headphones size={18} className="text-[#3BB77E] flex-shrink-0 mt-1" />
-                <span><strong className="text-[#253D4E]">Call Us:</strong> <span className="text-[#3BB77E]">(+91)-540-025-124553</span></span>
-              </li>
-              <li className="flex items-start gap-2">
-                <Mail size={18} className="text-[#3BB77E] flex-shrink-0 mt-1" />
-                <span><strong className="text-[#253D4E]">Email:</strong> <span className="text-[#3BB77E]">sale@Nest.com</span></span>
-              </li>
-              <li className="flex items-start gap-2">
-                <Clock size={18} className="text-[#3BB77E] flex-shrink-0 mt-1" />
-                <span><strong className="text-[#253D4E]">Hours:</strong> 10:00 - 18:00, Mon - Sat</span>
-              </li>
-            </ul>
+  return <footer className="mt-16 border-t border-emerald-100 bg-[#f4fbf7] font-sans text-[#19364d]">
+    <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+      <div className="grid gap-10 lg:grid-cols-[1.45fr_1fr_1fr_1fr]">
+        <div>
+          <Link to="/" className="inline-flex items-center gap-2"><img src={logo} alt="Freshq" className="h-11 w-11 object-contain" /><span className="text-3xl font-black tracking-tight">Fresh<span className="text-[#31b875]">q</span></span></Link>
+          <p className="mt-5 max-w-sm text-sm leading-6 text-slate-500">Fresh essentials, carefully selected and delivered straight to your doorstep.</p>
+          <div className="mt-6 space-y-3 text-sm text-slate-600">
+            <p className="flex gap-2"><MapPin size={17} className="mt-0.5 shrink-0 text-[#31b875]" />South Delhi, India</p>
+            <a href="tel:8920464643" className="flex gap-2 font-bold text-[#19364d] hover:text-[#31b875]"><PhoneCall size={17} className="shrink-0 text-[#31b875]" />8920464643</a>
+            <a href="mailto:help@freshq.com" className="flex gap-2 hover:text-[#31b875]"><Mail size={17} className="shrink-0 text-[#31b875]" />help@freshq.com</a>
           </div>
-
-          {/* 2-5. Links Columns */}
-          {footerLinks.map((col, idx) => (
-            <div key={idx}>
-              <h3 className="text-[22px] font-bold text-[#253D4E] mb-6">{col.title}</h3>
-              <ul className="space-y-3.5">
-                {col.links.map((link, i) => (
-                  <li key={i}>
-                    <a href="#" className="text-[14px] text-gray-500 hover:text-[#3BB77E] transition-colors hover:translate-x-1 inline-block transform duration-300">
-                      {link}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-
-          {/* 6. App & Payment Column */}
-          <div className="sm:col-span-2 md:col-span-3 lg:col-span-1">
-            <h3 className="text-[22px] font-bold text-[#253D4E] mb-6">Install App</h3>
-            <p className="text-[14px] text-gray-500 mb-4">From App Store or Google Play</p>
-            
-            {/* App Badges */}
-            <div className="flex flex-col gap-3 mb-8">
-              <button className="text-white rounded-md px-3 py-2 flex items-center gap-2 hover:bg-gray-800 transition-colors w-36">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Google Play" className="h-6" />
-              </button>
-              <button className="text-white rounded-md px-3 py-2 flex items-center gap-2 hover:bg-gray-800 transition-colors w-36">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" alt="App Store" className="h-6" />
-              </button>
-            </div>
-
-            <p className="text-[14px] text-gray-500 mb-4">Secured Payment Gateways</p>
-            {/* Payment Icons (Using CSS shapes for representation) */}
-            <div className="flex items-center gap-2">
-               <div className="w-10 h-6 bg-blue-800 text-white font-bold italic text-[9px] flex items-center justify-center rounded">VISA</div>
-               <div className="w-10 h-6 bg-gray-100 flex items-center justify-center rounded overflow-hidden">
-                 <div className="w-4 h-4 bg-red-500 rounded-full -mr-1 mix-blend-multiply"></div>
-                 <div className="w-4 h-4 bg-yellow-400 rounded-full -ml-1 mix-blend-multiply"></div>
-               </div>
-               <div className="w-10 h-6 bg-blue-100 text-blue-800 font-bold text-[8px] flex items-center justify-center rounded">Maestro</div>
-               <div className="w-10 h-6 bg-blue-400 text-white font-bold text-[8px] flex items-center justify-center rounded">AMEX</div>
-            </div>
-          </div>
-
         </div>
-
-        {/* --- BOTTOM SECTION (Copyright & Support) --- */}
-        <div className="border-t border-green-100 pt-8 mt-8 flex flex-col lg:flex-row justify-between items-center gap-6">
-          
-          {/* Copyright */}
-          <div className="text-[14px] text-gray-500 text-center lg:text-left">
-            <p>© 2026, Nest - WordPress Ecommerce Template.</p>
-            <p>All rights reserved</p>
-          </div>
-
-          {/* Support Numbers */}
-          <div className="flex flex-col sm:flex-row gap-6 sm:gap-12">
-            <div className="flex items-center gap-3">
-              <PhoneCall size={36} className="text-gray-400" />
-              <div className="flex flex-col">
-                <span className="text-[#3BB77E] text-2xl font-bold leading-none">1900646666</span>
-                <span className="text-[12px] text-gray-500 font-medium">Working 8:00 - 22:00</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <PhoneCall size={36} className="text-gray-400" />
-              <div className="flex flex-col">
-                <span className="text-[#3BB77E] text-2xl font-bold leading-none">1900648888</span>
-                <span className="text-[12px] text-gray-500 font-medium">24/7 Support Center</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Socials */}
-          <div className="flex flex-col items-center lg:items-end gap-2">
-            <div className="flex items-center gap-3">
-              <span className="text-[15px] font-bold text-[#253D4E] mr-2">Follow Us</span>
-              <a href="#" className="w-8 h-8 rounded-full bg-[#3BB77E] flex items-center justify-center text-white hover:bg-[#2fa06c] transition-colors"><FaFacebook size={16} /></a>
-              <a href="#" className="w-8 h-8 rounded-full bg-[#3BB77E] flex items-center justify-center text-white hover:bg-[#2fa06c] transition-colors"><FaTwitter size={16} /></a>
-              <a href="#" className="w-8 h-8 rounded-full bg-[#3BB77E] flex items-center justify-center text-white hover:bg-[#2fa06c] transition-colors"><FaInstagram size={16} /></a>
-              <a href="#" className="w-8 h-8 rounded-full bg-[#3BB77E] flex items-center justify-center text-white hover:bg-[#2fa06c] transition-colors"><FaYoutube size={16} /></a>
-            </div>
-            <p className="text-[13px] text-gray-500 mt-1">Up to 15% discount on your first subscribe</p>
-          </div>
-
-        </div>
-
+        {columns.map((column) => <div key={column.title}><h3 className="text-base font-extrabold">{column.title}</h3><ul className="mt-5 space-y-3">{column.links.map(([label, path]) => <li key={label}><Link to={path} className="inline-flex items-center gap-1 text-sm text-slate-500 transition-colors hover:text-[#31b875] hover:translate-x-0.5">{label}<ArrowUpRight size={13} /></Link></li>)}</ul></div>)}
       </div>
-    </footer>
-  );
+      <div className="mt-12 grid gap-5 rounded-2xl border border-emerald-100 bg-white p-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="flex gap-3"><span className="rounded-xl bg-emerald-50 p-2.5 text-[#31b875]"><Headphones size={20} /></span><div><p className="font-bold">Need help?</p><a href="tel:8920464643" className="text-sm font-semibold text-[#31b875]">8920464643</a></div></div>
+        <div className="flex gap-3"><span className="rounded-xl bg-emerald-50 p-2.5 text-[#31b875]"><Clock size={20} /></span><div><p className="font-bold">Support hours</p><p className="text-sm text-slate-500">24/7 Support Center</p></div></div>
+        <div className="flex gap-3"><span className="rounded-xl bg-emerald-50 p-2.5 text-[#31b875]"><Leaf size={20} /></span><div><p className="font-bold">Freshness promise</p><p className="text-sm text-slate-500">Hand-picked quality, always.</p></div></div>
+      </div>
+      <div className="mt-8 flex flex-col gap-4 border-t border-emerald-100 pt-7 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between"><p>© 2026 Freshq. All rights reserved.</p><div className="flex items-center gap-3"><span className="mr-1 font-semibold text-[#19364d]">Follow us</span><a href="#" aria-label="Facebook" className="rounded-full bg-white p-2 text-[#31b875] shadow-sm hover:bg-[#31b875] hover:text-white"><FaFacebook size={15} /></a><a href="#" aria-label="Instagram" className="rounded-full bg-white p-2 text-[#31b875] shadow-sm hover:bg-[#31b875] hover:text-white"><FaInstagram size={15} /></a><a href="#" aria-label="Youtube" className="rounded-full bg-white p-2 text-[#31b875] shadow-sm hover:bg-[#31b875] hover:text-white"><FaYoutube size={15} /></a></div></div>
+    </div>
+  </footer>;
 };
 
 export default Footer;

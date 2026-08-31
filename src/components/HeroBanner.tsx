@@ -32,7 +32,6 @@ const slides = [
 const HeroBanner = () => {
   const [current, setCurrent] = useState(0);
 
-  // Auto-slide effect (every 5 seconds)
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrent((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
@@ -76,8 +75,8 @@ const HeroBanner = () => {
             ))}
           </div>
 
-          {/* FIXED EMAIL INPUT FORM - Never Moves */}
-          <form 
+      
+          {/* <form 
             onSubmit={(e) => e.preventDefault()} 
             className="relative z-20 flex items-center bg-white rounded-full p-1 max-w-md w-full shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-white"
           >
@@ -93,7 +92,7 @@ const HeroBanner = () => {
             >
               Subscribe
             </button>
-          </form>
+          </form> */}
         </div>
 
         {/* Right Image Area */}
