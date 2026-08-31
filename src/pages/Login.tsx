@@ -107,7 +107,7 @@ const Login = () => {
                         </p>
                     </div>
 
-                    <div className="absolute inset-x-0 bottom-0 pt-40 px-10 grid grid-cols-2 gap-4 opacity-80 scale-105 rotate-[-5deg]">
+                    <div className="absolute inset-x-0 bottom-0 pt-40 px-10 opacity-50 scale-105">
                          <img src={loginimg} alt="food" className="w-full h-full object-cover aspect-square" />
                     </div>
 
