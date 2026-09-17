@@ -7,7 +7,7 @@ const Footer = () => {
   const columns = [
     { title: 'Freshq', links: [['About Us', '/about'], ['Contact Us', '/contact'], ['Privacy Policy', '/privacy'], ['Terms & Conditions', '/terms']] },
     { title: 'Shop', links: [['Fresh Groceries', '/shop'], ['Daily Best Sells', '/#daily-best-sells'], ['Deals of the Day', '/#deals-of-the-day'], ['My Account', '/account']] },
-    { title: 'Customer Care', links: [['Track My Order', '/account'], ['My Wishlist', '/wishlist'], ['Shopping Cart', '/cart'], ['Help & Support', '/contact']] },
+    { title: 'Customer Care', links: [['Track My Order', '/account/orders'], ['My Wishlist', '/wishlist'], ['Shopping Cart', '/cart'], ['Help & Support', '/contact']] },
   ];
 
   return <footer className="mt-16 border-t border-emerald-100 bg-[#f4fbf7] font-sans text-[#19364d]">

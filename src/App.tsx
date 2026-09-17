@@ -26,6 +26,7 @@ import ContactPage from './components/ContactPage';
 import AdminDeals from './components/AdminDeals';
 import ScrollToTop from './components/ScrollToTop';
 import AdminContactSection from './components/AdminContactSection';
+import AdminSettings from './pages/AdminSettings';
 import { PrivacyPolicy, TermsConditions } from './pages/LegalPages';
 
 function App() {
@@ -49,12 +50,16 @@ function App() {
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<TermsConditions />} />
             <Route path="/product/:id" element={<ProductDetailsPage />} />
+            <Route path="/account" element={<UserAccount page="dashboard" />} />
 
             {/* Private User Pages */}
             <Route element={<UserProtectedRoute />}>
                <Route path="/cart" element={<ShoppingCart />} />
                <Route path="/wishlist" element={<Wishlist />} />
-               <Route path="/account" element={<UserAccount />} />
+               <Route path="/account/orders" element={<UserAccount page="orders" />} />
+               <Route path="/account/addresses" element={<UserAccount page="addresses" />} />
+               <Route path="/account/details" element={<UserAccount page="details" />} />
+               <Route path="/account/support" element={<UserAccount page="support" />} />
             </Route>
           </Route>
         </Route>
@@ -75,6 +80,7 @@ function App() {
              <Route path="transactions" element={<Transactions />} />
              <Route path="daily-deals" element={<AddDailyDealWidget />} />
              <Route path="contact" element={<AdminContactSection />} />
+             <Route path="settings" element={<AdminSettings />} />
           </Route>
         </Route>
 

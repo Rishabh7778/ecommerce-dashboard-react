@@ -15,13 +15,13 @@ export const HelpSupportTab = () => {
             await addComplaint(formData).unwrap();
             Swal.fire({
                 title: 'Sent!',
-                text: 'Aapki query admin ko bhej di gayi hai. Hum jald hi aapse sampark karenge.',
+                text: 'Your request has been sent to our support team. We will contact you shortly.',
                 icon: 'success',
                 confirmButtonColor: '#3BB77E'
             });
             setFormData({ subject: '', message: '' }); // Form clear kar do
         } catch (error: any) {
-            Swal.fire('Error', error.data?.message || 'Message nahi gaya. Phir se try karein.', 'error');
+            Swal.fire('Unable to send', error.data?.message || 'Your message could not be sent. Please try again.', 'error');
         }
     };
 
@@ -31,11 +31,11 @@ export const HelpSupportTab = () => {
                 <Headset className="text-[#3BB77E]" size={28} />
                 <h2 className="text-2xl font-bold">Help & Support</h2>
             </div>
-            <p className="text-gray-500 mb-8">Koi dikkat hai ya koi sawaal? Humein message karein, humari team jaldi reply karegi.</p>
+            <p className="text-gray-500 mb-8">Have a question or an issue? Send us a message and our team will respond as soon as possible.</p>
 
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">Subject / Sawaal kis baare mein hai?</label>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Subject</label>
                     <input 
                         required 
                         type="text" 
@@ -53,7 +53,7 @@ export const HelpSupportTab = () => {
                         rows={5}
                         value={formData.message}
                         onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                        placeholder="Apni problem yahan detail mein likhein..." 
+                        placeholder="Describe your question or issue in detail..." 
                         className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-[#F8F9FA] outline-none focus:border-[#3BB77E] focus:bg-white transition-colors resize-none"
                     ></textarea>
                 </div>
@@ -70,7 +70,7 @@ export const HelpSupportTab = () => {
 
             <div className="mt-8 pt-6 border-t border-gray-100 flex items-center gap-3 bg-blue-50/50 p-4 rounded-2xl text-blue-800">
                 <MessageSquare size={20} className="text-blue-500" />
-                <p className="text-sm font-medium">Aapka phone number aur email aapke account se automatically fetch kar liya jayega taaki hum aapse contact kar sakein.</p>
+                <p className="text-sm font-medium">Your account contact details will be used so our team can follow up about this request.</p>
             </div>
         </div>
     );

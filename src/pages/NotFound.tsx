@@ -36,7 +36,7 @@ const NotFound = () => {
         <h1 className="text-8xl font-black text-[#253D4E] mb-2">404</h1>
         <h2 className="text-2xl font-bold text-gray-800 mb-4">Oops! Page Not Found</h2>
         <p className="text-gray-500 mb-10 leading-relaxed">
-          Bhai, lagta hai aap galat raste par aa gaye hain. Ye page hamare database mein nahi mila.
+          The page you are looking for does not exist or may have been moved.
         </p>
 
         {/* Action Buttons */}

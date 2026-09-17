@@ -7,6 +7,13 @@ import {
 
 const Sidebar = () => {
   const navigate = useNavigate();
+  const admin = (() => {
+    try {
+      return JSON.parse(localStorage.getItem('user') || 'null');
+    } catch {
+      return null;
+    }
+  })();
 
   // Yahan humne saare paths ke aage '/admin' prefix add kar diya hai
   const menuItems = [
@@ -68,15 +75,17 @@ const Sidebar = () => {
       {/* Bottom Profile Section */}
       <div className="p-4 border-t border-gray-100 bg-white">
         <div className="flex items-center gap-3 mb-4">
-          <img src="https://i.pravatar.cc/150?u=a042581f4e29026024d" alt="User" className="w-10 h-10 rounded-full" />
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-sm font-black text-emerald-700">
+            {admin?.name?.charAt(0)?.toUpperCase() || 'A'}
+          </span>
           <div className="overflow-hidden">
-            <p className="text-sm font-semibold text-gray-800 truncate">Freshq Admin</p>
-            <p className="text-xs text-gray-400 truncate">Manage your store</p>
+            <p className="text-sm font-semibold text-gray-800 truncate">{admin?.name || 'Freshq Admin'}</p>
+            <p className="text-xs text-gray-400 truncate">{admin?.email || 'Manage your store'}</p>
           </div>
         </div>
-        <button className="w-full flex items-center justify-center gap-2 border border-gray-200 text-gray-600 rounded-lg py-2 text-sm font-medium hover:bg-gray-50 transition-all">
-          <Settings size={16} /> Your Shop
-        </button>
+        <NavLink to="/admin/settings" className={({ isActive }) => `w-full flex items-center justify-center gap-2 border rounded-lg py-2 text-sm font-medium transition-all ${isActive ? 'border-emerald-500 bg-emerald-50 text-emerald-700' : 'border-gray-200 text-gray-600 hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700'}`}>
+          <Settings size={16} /> Settings
+        </NavLink>
         <button
           type="button"
           onClick={handleLogout}

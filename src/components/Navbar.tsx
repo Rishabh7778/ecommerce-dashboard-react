@@ -59,7 +59,7 @@ const Header = () => {
     <p key="1"><span className="text-[#3BB77E] font-medium">100% Secure delivery</span> without contacting the courier.</p>,
     <p key="2"><span className="text-[#3BB77E] font-medium">Free Shipping</span> on all orders above ₹500!</p>,
     <p key="3">Mega Sale: Get <span className="text-red-500 font-bold">Flat 20% OFF</span> on your first order.</p>,
-    <p key="4">Need help? Call Us: <span className="text-[#3BB77E] font-medium">+91 98765 43210</span></p>
+    <p key="4">Need help? Call us: <span className="text-[#3BB77E] font-medium">+91 89204 64643</span></p>
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -133,7 +133,7 @@ const Header = () => {
       </div>
 
       {/* 2. Middle Main Header (Responsive) */}
-      <div className="flex justify-evenly items-center px-4 lg:px-8 py-4 lg:py-6 gap-6 border-b border-gray-100">
+      <div className="flex justify-evenly items-center px-3 sm:px-4 lg:px-8 py-3 lg:py-6 gap-2 lg:gap-6 border-b border-gray-100">
         
         {/* 🔥 Mobile Hamburger Button */}
         <button 
@@ -144,9 +144,9 @@ const Header = () => {
         </button>
 
         {/* Logo */}
-        <div className="flex items-center gap-2 min-w-fit cursor-pointer mx-auto lg:mx-0">
-          <a className="text-3xl lg:text-4xl text-green-500 font-black tracking-tight flex items-center" href="/">
-            <img src={logo} alt="Nest Logo" className="w-20 h-20 lg:w-12 lg:h-12 mr-2" /> Freshiq
+        <div className="flex items-center gap-1 min-w-fit cursor-pointer mx-auto lg:mx-0">
+          <a className="text-xl sm:text-2xl lg:text-4xl text-green-500 font-black tracking-tight flex items-center" href="/">
+            <img src={logo} alt="Nest Logo" className="w-11 h-11 sm:w-12 sm:h-12 lg:w-12 lg:h-12 mr-1 sm:mr-2" /> Freshiq
           </a>
         </div>
 
@@ -199,17 +199,17 @@ const Header = () => {
         </div>
 
         {/* Right Actions */}
-        <div className="flex items-center gap-4 lg:gap-6">
+        <div className="flex items-center gap-2.5 sm:gap-4 lg:gap-6">
           
-          <NavLink to="/account" className="hidden sm:flex items-center gap-2 text-gray-700 hover:text-green-500 group">
-            <User size={24} className="text-gray-600 group-hover:text-green-500 transition-colors" />
+          <NavLink to="/account" aria-label="My account" className={({ isActive }) => `group flex items-center gap-2 rounded-lg px-1.5 py-1 transition-colors ${isActive ? 'bg-emerald-50 text-[#31b875]' : 'text-gray-700 hover:text-[#31b875]'}`}>
+            <User size={24} className="text-current transition-colors" />
             <span className="text-sm font-medium hidden lg:block">Account</span>
           </NavLink>
-          <NavLink to="/wishlist" className="relative flex items-center gap-2 text-gray-700 hover:text-red-500 group">
+          <NavLink to="/wishlist" className={({ isActive }) => `group relative flex items-center gap-2 rounded-lg px-1.5 py-1 transition-colors ${isActive ? 'bg-emerald-50 text-[#31b875]' : 'text-gray-700 hover:text-[#31b875]'}`}>
   <div className="relative">
     <Heart 
       size={26} 
-      className="text-gray-600 group-hover:text-red-500 transition-colors duration-300" 
+      className="text-current transition-colors duration-300" 
     />
     {wishlistItems.length > 0 && (
       <span className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] min-w-[18px] h-[18px] px-1 rounded-full flex items-center justify-center font-bold border-2 border-white">
@@ -221,11 +221,11 @@ const Header = () => {
 </NavLink>
 
           {/* 🔥 CART ICON WITH ANIMATION */}
-          <NavLink to="/cart" className="relative flex items-center gap-2 text-gray-700 hover:text-green-500 group">
+          <NavLink to="/cart" className={({ isActive }) => `group relative flex items-center gap-2 rounded-lg px-1.5 py-1 transition-colors ${isActive ? 'bg-emerald-50 text-[#31b875]' : 'text-gray-700 hover:text-[#31b875]'}`}>
             <div className="relative">
               <ShoppingCart 
                 size={26} 
-                className={`text-gray-600 group-hover:text-green-500 transition-all duration-300 ${isCartAnimating ? 'scale-125 text-[#3BB77E]' : 'scale-100'}`} 
+                className={`text-current transition-all duration-300 ${isCartAnimating ? 'scale-125 text-[#3BB77E]' : 'scale-100'}`} 
               />
               <span className={`absolute -top-1.5 -right-1.5 bg-green-500 text-white text-[10px] min-w-[18px] h-[18px] px-1 rounded-full flex items-center justify-center font-bold border-2 border-white transition-transform duration-300 ${isCartAnimating ? 'scale-150 bg-red-500' : 'scale-100'}`}>
                 {totalItems}
@@ -270,10 +270,10 @@ const Header = () => {
 
           <nav className="flex items-center gap-6 font-semibold text-sm text-gray-700">
             <a href="#deals-of-the-day" className="flex items-center gap-1 text-green-500"><Flame size={18} /> Hot Deals</a>
-            <NavLink to="/" className="hover:text-green-500">Home</NavLink>
-            <NavLink to="/shop" className="hover:text-green-500">Shop</NavLink>
-            <NavLink to="/about" className="hover:text-green-500">About</NavLink>
-            <NavLink to="/contact" className="hover:text-green-500">Contact</NavLink>
+            <NavLink to="/" end className={({ isActive }) => `relative rounded-lg px-3 py-2 transition-colors after:absolute after:inset-x-3 after:-bottom-1 after:h-0.5 after:rounded-full after:transition-transform ${isActive ? 'bg-emerald-50 text-[#31b875] after:scale-x-100 after:bg-[#31b875]' : 'hover:bg-emerald-50 hover:text-[#31b875] after:scale-x-0'}`}>Home</NavLink>
+            <NavLink to="/shop" className={({ isActive }) => `relative rounded-lg px-3 py-2 transition-colors after:absolute after:inset-x-3 after:-bottom-1 after:h-0.5 after:rounded-full after:transition-transform ${isActive ? 'bg-emerald-50 text-[#31b875] after:scale-x-100 after:bg-[#31b875]' : 'hover:bg-emerald-50 hover:text-[#31b875] after:scale-x-0'}`}>Shop</NavLink>
+            <NavLink to="/about" className={({ isActive }) => `relative rounded-lg px-3 py-2 transition-colors after:absolute after:inset-x-3 after:-bottom-1 after:h-0.5 after:rounded-full after:transition-transform ${isActive ? 'bg-emerald-50 text-[#31b875] after:scale-x-100 after:bg-[#31b875]' : 'hover:bg-emerald-50 hover:text-[#31b875] after:scale-x-0'}`}>About</NavLink>
+            <NavLink to="/contact" className={({ isActive }) => `relative rounded-lg px-3 py-2 transition-colors after:absolute after:inset-x-3 after:-bottom-1 after:h-0.5 after:rounded-full after:transition-transform ${isActive ? 'bg-emerald-50 text-[#31b875] after:scale-x-100 after:bg-[#31b875]' : 'hover:bg-emerald-50 hover:text-[#31b875] after:scale-x-0'}`}>Contact</NavLink>
           </nav>
         </div>
         <div className="flex items-center gap-3">
@@ -312,10 +312,10 @@ const Header = () => {
 
             {/* Mobile Nav Links */}
             <nav className="flex flex-col gap-4 font-bold text-gray-700">
-              <NavLink to="/" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-green-500">Home</NavLink>
-              <NavLink to="/shop" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-green-500">Shop</NavLink>
-              <NavLink to="/about" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-green-500">About Us</NavLink>
-              <NavLink to="/contact" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-green-500">Contact</NavLink>
+              <NavLink to="/" end onClick={() => setIsMobileMenuOpen(false)} className={({ isActive }) => `rounded-xl px-4 py-3 transition-colors ${isActive ? 'bg-[#31b875] text-white shadow-md shadow-emerald-100' : 'hover:bg-emerald-50 hover:text-[#31b875]'}`}>Home</NavLink>
+              <NavLink to="/shop" onClick={() => setIsMobileMenuOpen(false)} className={({ isActive }) => `rounded-xl px-4 py-3 transition-colors ${isActive ? 'bg-[#31b875] text-white shadow-md shadow-emerald-100' : 'hover:bg-emerald-50 hover:text-[#31b875]'}`}>Shop</NavLink>
+              <NavLink to="/about" onClick={() => setIsMobileMenuOpen(false)} className={({ isActive }) => `rounded-xl px-4 py-3 transition-colors ${isActive ? 'bg-[#31b875] text-white shadow-md shadow-emerald-100' : 'hover:bg-emerald-50 hover:text-[#31b875]'}`}>About Us</NavLink>
+              <NavLink to="/contact" onClick={() => setIsMobileMenuOpen(false)} className={({ isActive }) => `rounded-xl px-4 py-3 transition-colors ${isActive ? 'bg-[#31b875] text-white shadow-md shadow-emerald-100' : 'hover:bg-emerald-50 hover:text-[#31b875]'}`}>Contact</NavLink>
             </nav>
 
             <hr className="border-gray-100" />

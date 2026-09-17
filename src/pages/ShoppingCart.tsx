@@ -41,7 +41,7 @@ const ShoppingCart: React.FC = () => {
 
     const res = await loadRazorpayScript();
     if (!res) {
-      alert("Razorpay SDK load nahi ho paya!");
+      alert("The secure payment service could not be loaded. Please try again.");
       return;
     }
 
@@ -103,7 +103,7 @@ const ShoppingCart: React.FC = () => {
 
     } catch (err: any) {
       console.error("Order Creation Failed:", err);
-      Swal.fire("Server error", err.data?.message || "Order create nahi hua.", "error");
+      Swal.fire("Order failed", err.data?.message || "Your order could not be created. Please try again.", "error");
     }
   };
 

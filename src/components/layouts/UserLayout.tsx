@@ -11,7 +11,11 @@ const SiteBreadcrumb = () => {
     '/shop': 'Shop', '/about': 'About Us', '/contact': 'Contact Us', '/privacy': 'Privacy Policy', '/terms': 'Terms & Conditions',
     '/cart': 'Shopping Cart', '/wishlist': 'Wishlist', '/account': 'My Account', '/login': 'Login',
   };
-  const current = pathname.startsWith('/product/') ? 'Product Details' : labels[pathname] || 'Page';
+  const accountLabels: Record<string, string> = {
+    '/account/orders': 'My Orders', '/account/addresses': 'Saved Addresses',
+    '/account/details': 'Profile Details', '/account/support': 'Help & Support',
+  };
+  const current = pathname.startsWith('/product/') ? 'Product Details' : accountLabels[pathname] || labels[pathname] || 'Page';
 
   return <div className="border-y border-slate-100 bg-white">
     <nav aria-label="Breadcrumb" className="mx-auto flex max-w-7xl items-center gap-2 px-4 py-4 text-sm sm:px-6 lg:px-8">

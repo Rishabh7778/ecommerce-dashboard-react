@@ -32,7 +32,7 @@ const Login = () => {
 
         // 1. Client-side Validation
         if (!isLogin && formData.password !== formData.confirmPassword) {
-            return Swal.fire('Error', 'Bhai, dono password same hone chahiye!', 'error');
+            return Swal.fire('Passwords do not match', 'Please enter the same password in both fields.', 'error');
         }
 
         try {
@@ -69,12 +69,12 @@ const Login = () => {
                     role: 'user' // Default role as per SQL schema
                 }).unwrap();
 
-                Swal.fire('Success', 'Account ban gaya! Ab login kar lo.', 'success');
+                Swal.fire('Account created', 'Your account is ready. Please sign in to continue.', 'success');
                 setIsLogin(true); // Switch to login mode
             }
         } catch (err: any) {
             console.error("Auth Error:", err);
-            Swal.fire('Oops!', err.data?.message || 'Email ya Password galat hai!', 'error');
+            Swal.fire('Unable to continue', err.data?.message || 'The email address or password is incorrect.', 'error');
         }
     };
 
@@ -103,7 +103,7 @@ const Login = () => {
                             FRESH GROCERIES, DELIVERED
                         </span>
                         <p className="mt-4 text-lg leading-8 text-slate-600 max-w-sm">
-                            Fresh groceries aur everyday essentials, seedha aapke darwaaze par.
+                            Fresh groceries and everyday essentials, delivered straight to your door.
                         </p>
                     </div>
 
@@ -181,7 +181,7 @@ const Login = () => {
                         <p className="text-slate-500 text-sm">
                             {isLogin ? "New to Freshq?" : "Already have an account?"}
                             <button onClick={() => setIsLogin(!isLogin)} className="font-bold text-[#31b875] hover:text-[#279b61] ml-2">
-                                {isLogin ? "Sign Up Karo" : "Login Karo"}
+                                {isLogin ? "Create an account" : "Sign in"}
                             </button>
                         </p>
                     </div>
