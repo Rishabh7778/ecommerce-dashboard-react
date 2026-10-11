@@ -38,7 +38,7 @@ const AboutPage = () => (
 
         <div className="relative mx-auto w-full max-w-xl">
           <div className="absolute -inset-5" />
-          <img src={img1} alt="A fresh selection of vegetables" className="relative h-[430px] w-full rounded-[2.5rem] object-cover shadow-2xl sm:h-[520px]" />
+          <img src={img1} alt="A fresh selection of vegetables" className="relative h-[430px] w-full rounded-[2.5rem] object-cover sm:h-[520px]" />
           <div className="absolute -bottom-5 -left-3 flex items-center gap-3 rounded-2xl border border-white bg-white/95 p-4 shadow-xl backdrop-blur sm:left-5">
             <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-[#31b875]"><Clock3 size={22} /></span>
             <span><span className="block text-sm font-black">Convenience you can count on</span><span className="block text-xs text-slate-500">From cart to doorstep</span></span>
