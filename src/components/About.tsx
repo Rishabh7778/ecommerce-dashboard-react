@@ -1,7 +1,7 @@
 import { ArrowRight, CheckCircle2, Clock3, HeartHandshake, Leaf, PackageCheck, ShieldCheck, Sparkles, Truck } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import vegetables from '../assets/images/vegetables.webp';
-import fruits from '../assets/images/fruits.webp';
+import img1 from '../assets/images/abt-1.webp';
+import img2 from '../assets/images/abt-2.webp';
 
 const principles = [
   { icon: Leaf, title: 'Fresh by standard', text: 'We select produce and everyday essentials with freshness, quality, and value in mind.' },
@@ -37,8 +37,8 @@ const AboutPage = () => (
         </div>
 
         <div className="relative mx-auto w-full max-w-xl">
-          <div className="absolute -inset-5 rotate-3 rounded-[2.75rem] bg-[#19364d]" />
-          <img src={vegetables} alt="A fresh selection of vegetables" className="relative h-[430px] w-full rounded-[2.5rem] object-cover shadow-2xl sm:h-[520px]" />
+          <div className="absolute -inset-5" />
+          <img src={img1} alt="A fresh selection of vegetables" className="relative h-[430px] w-full rounded-[2.5rem] object-cover shadow-2xl sm:h-[520px]" />
           <div className="absolute -bottom-5 -left-3 flex items-center gap-3 rounded-2xl border border-white bg-white/95 p-4 shadow-xl backdrop-blur sm:left-5">
             <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-[#31b875]"><Clock3 size={22} /></span>
             <span><span className="block text-sm font-black">Convenience you can count on</span><span className="block text-xs text-slate-500">From cart to doorstep</span></span>
@@ -50,8 +50,8 @@ const AboutPage = () => (
     <section className="px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
       <div className="mx-auto grid max-w-7xl items-center gap-14 lg:grid-cols-2">
         <div className="relative">
-          <img src={fruits} alt="Fresh fruit selected for customers" className="h-[420px] w-full rounded-[2.5rem] object-cover shadow-[0_28px_70px_-35px_rgba(15,23,42,0.4)] sm:h-[520px]" />
-          <div className="absolute bottom-5 right-5 max-w-[230px] rounded-2xl bg-[#19364d] p-5 text-white shadow-xl"><Leaf className="mb-3 text-[#55d493]" size={24} /><p className="font-black">Quality is not an extra.</p><p className="mt-1 text-sm leading-5 text-slate-300">It is the starting point for every Freshq order.</p></div>
+          <img src={img2} alt="Fresh fruit selected for customers" className="h-[420px] w-full rounded-[2.5rem] object-cover shadow-[0_28px_70px_-35px_rgba(15,23,42,0.4)] sm:h-[520px]" />
+          <div className="absolute bottom-5 right-5 max-w-[230px] rounded-2xl p-5 text-white shadow-xl"><Leaf className="mb-3 text-[#55d493]" size={24} /><p className="font-black">Quality is not an extra.</p><p className="mt-1 text-sm leading-5 text-slate-300">It is the starting point for every Freshq order.</p></div>
         </div>
         <div>
           <p className="text-xs font-black uppercase tracking-[0.2em] text-[#31b875]">Our story</p>
